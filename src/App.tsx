@@ -148,8 +148,8 @@ export default function App() {
             />
           </div>
 
-          {/* Right Column: Canvas Preview (Sticky and Centered on desktop) */}
-          <div className="space-y-6 lg:sticky lg:top-8 lg:h-[calc(100vh-6rem)] order-1 lg:order-2 flex flex-col justify-center items-center w-full">
+          {/* Right Column: Canvas Preview (Sticky on desktop) */}
+          <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col justify-start items-center w-full mt-12 lg:mt-0">
             {/* Real-time HTML5 Canvas with 3D Holographic Tilt */}
             <div 
               className="relative w-full transition-transform duration-200 ease-out perspective-1000"
@@ -173,7 +173,7 @@ export default function App() {
               }}
               onMouseLeave={() => setTilt({ x: 0, y: 0, active: false })}
             >
-              <div className={`w-full overflow-hidden rounded-2xl ${tilt.active ? 'shadow-[0_20px_50px_rgba(254,225,1,0.2)]' : ''} transition-shadow duration-300`}>
+              <div className={`relative w-full overflow-hidden rounded-2xl ${tilt.active ? 'shadow-[0_20px_50px_rgba(254,225,1,0.2)]' : ''} transition-shadow duration-300 ${badgeData.rarity === 'MYTHIC' ? 'shimmer-foil' : ''}`}>
                 <FrameCanvas
                   badgeData={badgeData}
                   activePhoto={singlePhoto}
