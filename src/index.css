@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Imbue:opsz,wght@10..100,500..700&family=Victor+Mono:ital,wght@0,400..700;1,400..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #0B6839;
+  --color-brand-accent: #FEE101;
+  --color-brand-pink: #FF007A;
+  --color-brand-offwhite: #FFFEEA;
+  --font-heading: 'Imbue', serif;
+  --font-body: 'Victor Mono', monospace;
+  --font-mono: 'Victor Mono', monospace;
+}
+
+@layer base {
+  body {
+    font-family: 'Victor Mono', monospace;
+    background-color: var(--color-brand-primary);
+    color: var(--color-brand-offwhite);
+    overflow-x: hidden;
+  }
+
+  .font-syne, .font-heading {
+    font-family: 'Imbue', serif;
+  }
+
+  .font-mono {
+    font-family: 'Victor Mono', monospace;
+  }
+
+  .writing-vertical {
+    writing-mode: vertical-rl;
+  }
+}
+
+

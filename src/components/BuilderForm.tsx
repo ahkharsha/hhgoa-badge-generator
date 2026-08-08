@@ -1,0 +1,356 @@
+import React, { useState } from "react";
+import { Sparkles, Users, User, Palette, Layers, RefreshCw, Wand2, ShieldCheck } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { BadgeData, FrameFormat, ThemeStyle } from "../types";
+import { THEMES, PRESET_STACKS } from "../lib/constants";
+
+interface BuilderFormProps {
+  badgeData: BadgeData;
+  onChange: (updated: BadgeData) => void;
+  onGenerateAiTitle: () => Promise<void>;
+  isGeneratingAi: boolean;
+}
+
+export const BuilderForm: React.FC<BuilderFormProps> = ({
+  badgeData,
+  onChange,
+  onGenerateAiTitle,
+  isGeneratingAi,
+}) => {
+  const [activeTab, setActiveTab] = useState<"info" | "appearance" | "squad">("info");
+
+  const handleFormatChange = (format: FrameFormat) => {
+    onChange({ ...badgeData, format });
+  };
+
+  const handleThemeChange = (theme: ThemeStyle) => {
+    onChange({ ...badgeData, theme });
+  };
+
+  const applyPreset = (presetStack: string) => {
+    onChange({
+      ...badgeData,
+      stack: presetStack,
+    });
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Format Selector Tabs */}
+      <div>
+        <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-3 font-bold">
+          Step 01 / Output Format
+        </label>
+        <div className="grid grid-cols-5 gap-1 sm:gap-2">
+          <button
+            onClick={() => handleFormatChange("pfp")}
+            className={`py-2 px-1 border-2 transition font-black uppercase tracking-tighter text-xs flex flex-col items-center gap-1 cursor-pointer ${
+              badgeData.format === "pfp"
+                ? "bg-brand-accent text-brand-primary border-brand-accent"
+                : "bg-transparent text-brand-offwhite/60 border-brand-accent/30 hover:border-brand-accent hover:text-brand-offwhite"
+            }`}
+          >
+            <span>PFP</span>
+          </button>
+
+          <button
+            onClick={() => handleFormatChange("badge")}
+            className={`py-2 px-1 border-2 transition font-black uppercase tracking-tighter text-xs flex flex-col items-center gap-1 cursor-pointer ${
+              badgeData.format === "badge"
+                ? "bg-brand-accent text-brand-primary border-brand-accent"
+                : "bg-transparent text-brand-offwhite/60 border-brand-accent/30 hover:border-brand-accent hover:text-brand-offwhite"
+            }`}
+          >
+            <span>Card</span>
+          </button>
+
+          <button
+            onClick={() => handleFormatChange("squad")}
+            className={`py-2 px-1 border-2 transition font-black uppercase tracking-tighter text-xs flex flex-col items-center gap-1 cursor-pointer ${
+              badgeData.format === "squad"
+                ? "bg-brand-accent text-brand-primary border-brand-accent"
+                : "bg-transparent text-brand-offwhite/60 border-brand-accent/30 hover:border-brand-accent hover:text-brand-offwhite"
+            }`}
+          >
+            <span>Squad</span>
+          </button>
+          
+          <button
+            onClick={() => handleFormatChange("header")}
+            className={`py-2 px-1 border-2 transition font-black uppercase tracking-tighter text-xs flex flex-col items-center gap-1 cursor-pointer ${
+              badgeData.format === "header"
+                ? "bg-brand-accent text-brand-primary border-brand-accent"
+                : "bg-transparent text-brand-offwhite/60 border-brand-accent/30 hover:border-brand-accent hover:text-brand-offwhite"
+            }`}
+          >
+            <span>Header</span>
+          </button>
+          
+          <button
+            onClick={() => handleFormatChange("story")}
+            className={`py-2 px-1 border-2 transition font-black uppercase tracking-tighter text-xs flex flex-col items-center gap-1 cursor-pointer ${
+              badgeData.format === "story"
+                ? "bg-brand-accent text-brand-primary border-brand-accent"
+                : "bg-transparent text-brand-offwhite/60 border-brand-accent/30 hover:border-brand-accent hover:text-brand-offwhite"
+            }`}
+          >
+            <span>Story</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Primary Input Fields */}
+      <div className="space-y-6">
+        {/* Name */}
+        <div>
+          <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold">
+            Step 02 / Identity
+          </label>
+          <input
+            type="text"
+            value={badgeData.name}
+            onChange={(e) => onChange({ ...badgeData, name: e.target.value })}
+            placeholder="ALEX RIVERA"
+            className="w-full bg-transparent border-b-2 border-brand-accent/30 py-2 sm:py-3 text-xl sm:text-2xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase"
+          />
+          <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Enter your builder name as it will appear on the ID</p>
+        </div>
+
+        {/* Role & Stack */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold">
+              Specialization
+            </label>
+            <input
+              type="text"
+              value={badgeData.role}
+              onChange={(e) => onChange({ ...badgeData, role: e.target.value })}
+              placeholder="RUST / SOLANA"
+              className="w-full bg-transparent border-b-2 border-brand-accent/30 py-2 sm:py-3 text-lg sm:text-xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold">
+              Tech Stack
+            </label>
+            <input
+              type="text"
+              value={badgeData.stack}
+              onChange={(e) => onChange({ ...badgeData, stack: e.target.value })}
+              placeholder="REACT / TYPESCRIPT"
+              className="w-full bg-transparent border-b-2 border-brand-accent/30 py-2 sm:py-3 text-lg sm:text-xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase"
+            />
+          </div>
+        </div>
+
+        {/* Quick Stack Presets */}
+        <div>
+          <span className="text-[10px] uppercase font-mono tracking-widest text-brand-offwhite/60 block mb-2">
+            Quick Stack Presets //
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {PRESET_STACKS.map((st, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+                  applyPreset(st);
+                }}
+                className="px-3 py-1.5 border border-brand-accent/30 hover:border-brand-accent text-brand-offwhite/60 hover:text-brand-offwhite text-[10px] font-mono tracking-widest uppercase transition cursor-pointer"
+              >
+                {st.split("•")[0].trim()}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* AI Builder Title Section */}
+        <div className="pt-6 border-t border-brand-accent/30 space-y-6 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent font-bold flex items-center">
+              Step 03 / Generated Class
+              <AnimatePresence mode="wait">
+                {badgeData.rarity && (
+                  <motion.span
+                    key={badgeData.rarity}
+                    initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    className="ml-2 px-2 py-1 bg-brand-accent/20 text-brand-accent rounded text-[9px] font-mono tracking-widest inline-block"
+                  >
+                    {badgeData.rarity}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </label>
+            <button
+              onClick={() => {
+                if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(30);
+                onGenerateAiTitle();
+              }}
+              disabled={isGeneratingAi}
+              className="text-[10px] font-mono tracking-widest uppercase border border-brand-accent text-brand-accent px-4 py-2 hover:bg-brand-accent hover:text-brand-primary transition cursor-pointer disabled:opacity-50 flex items-center gap-2"
+            >
+              {isGeneratingAi ? (
+                <>
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-3 h-3" />
+                  <span>Auto-Generate</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={badgeData.builderTitle + badgeData.motto}
+              initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="space-y-6"
+            >
+              <div>
+                <input
+                  type="text"
+                  value={badgeData.builderTitle}
+                  onChange={(e) => onChange({ ...badgeData, builderTitle: e.target.value })}
+                  placeholder="AUTONOMOUS AGENT ALCHEMIST"
+                  className="w-full bg-transparent border-b-2 border-brand-accent/30 py-3 text-lg sm:text-xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase text-brand-offwhite"
+                />
+                <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Title designation</p>
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  value={badgeData.motto}
+                  onChange={(e) => onChange({ ...badgeData, motto: e.target.value })}
+                  placeholder="SHIPPING CODE AT 2:47 AM"
+                  className="w-full bg-transparent border-b-2 border-brand-accent/30 py-3 text-sm sm:text-base italic font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase text-brand-offwhite/80"
+                />
+                <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Terminal motto</p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Theme Picker */}
+        <div className="pt-6 border-t border-brand-accent/30">
+          <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-4 font-bold">
+            Step 04 / Colorway
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {(Object.keys(THEMES) as ThemeStyle[]).map((key) => {
+              const th = THEMES[key];
+              const isSelected = badgeData.theme === key;
+              return (
+                <button
+                  key={key}
+                  onClick={() => handleThemeChange(key)}
+                  className={`flex flex-col items-center justify-center p-4 border transition cursor-pointer ${
+                    isSelected
+                      ? "border-brand-accent bg-brand-primary/90"
+                      : "border-brand-accent/30 hover:border-[#666] bg-transparent"
+                  }`}
+                >
+                  <div className="flex gap-2 mb-3">
+                    <span
+                      className="w-4 h-4 rounded-full border border-black"
+                      style={{ backgroundColor: th.primary }}
+                    />
+                    <span
+                      className="w-4 h-4 rounded-full border border-black"
+                      style={{ backgroundColor: th.secondary }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-mono tracking-widest uppercase text-brand-offwhite">
+                    {th.name.split(" ")[0]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Cyberpunk Stamps & Effects */}
+        <div className="pt-6 border-t border-brand-accent/30 space-y-4">
+          <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold">
+            Step 05 / Cyberpunk FX & Stamps
+          </label>
+
+          {/* Stamps */}
+          <div>
+            <span className="text-[10px] uppercase font-mono tracking-widest text-brand-offwhite/60 block mb-2">
+              Holographic Stamp Seal //
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  "VERIFIED BUILDER",
+                  "HHG VIP APPROVED",
+                  "GOA VIP",
+                  "AI ALCHEMIST",
+                  "SOLANA DEGEN",
+                  "NONE",
+                ] as const
+              ).map((st) => (
+                <button
+                  key={st}
+                  onClick={() => onChange({ ...badgeData, stamp: st })}
+                  className={`px-3 py-1.5 border text-[10px] font-mono tracking-widest uppercase transition cursor-pointer ${
+                    badgeData.stamp === st
+                      ? "border-brand-accent bg-brand-accent text-brand-primary font-bold"
+                      : "border-brand-accent/30 text-[#888] hover:border-[#666] hover:text-brand-offwhite"
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* CRT Scanlines Toggle */}
+          <div className="flex items-center justify-between pt-2">
+            <span className="text-[10px] uppercase font-mono tracking-widest text-brand-offwhite/60">
+              CRT Scanlines Overlay
+            </span>
+            <button
+              onClick={() => onChange({ ...badgeData, scanlines: !badgeData.scanlines })}
+              className={`px-4 py-1.5 border text-[10px] font-mono tracking-widest uppercase transition cursor-pointer ${
+                badgeData.scanlines
+                  ? "border-brand-accent bg-brand-accent text-brand-primary font-bold"
+                  : "border-brand-accent/30 text-[#888] hover:border-[#666]"
+              }`}
+            >
+              {badgeData.scanlines ? "SCANLINES: ACTIVE" : "SCANLINES: OFF"}
+            </button>
+          </div>
+        </div>
+
+        {/* Squad Settings if format is squad */}
+        {badgeData.format === "squad" && (
+          <div className="pt-6 border-t border-brand-accent/30 space-y-4">
+            <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold">
+              Squad Parameters
+            </label>
+            <div>
+              <input
+                type="text"
+                value={badgeData.teamName}
+                onChange={(e) => onChange({ ...badgeData, teamName: e.target.value })}
+                placeholder="TEAM NEURAL SURGE"
+                className="w-full bg-transparent border-b-2 border-brand-accent/30 py-2 sm:py-3 text-xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors uppercase"
+              />
+              <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Enter squad designation</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
