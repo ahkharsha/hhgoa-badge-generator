@@ -83,6 +83,7 @@ async function startServer() {
       <html lang="en">
         <head>
           <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
           <title>HH Goa 2026 - Builder Pass</title>
           <meta property="og:title" content="HH Goa 2026 Builder Pass" />
           <meta property="og:description" content="I just generated my HH Goa 2026 Builder Pass! Generate yours now." />
@@ -92,12 +93,70 @@ async function startServer() {
           <meta name="twitter:title" content="HH Goa 2026 Builder Pass" />
           <meta name="twitter:description" content="I just generated my HH Goa 2026 Builder Pass! Generate yours now." />
           <meta name="twitter:image" content="${imageUrl}" />
-          <script>
-            window.location.href = "${appUrl}";
-          </script>
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              background-color: #0B6839;
+              color: #FFFEEA;
+              font-family: monospace;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              min-height: 100vh;
+              overflow-x: hidden;
+            }
+            .container {
+              max-width: 800px;
+              width: 100%;
+              padding: 2rem;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 2rem;
+              text-align: center;
+            }
+            .badge-image {
+              max-width: 100%;
+              height: auto;
+              max-height: 70vh;
+              border-radius: 12px;
+              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+              border: 1px solid rgba(254, 225, 1, 0.3);
+            }
+            .build-btn {
+              background-color: #FEE101;
+              color: #0B6839;
+              text-decoration: none;
+              font-weight: bold;
+              font-size: 1.2rem;
+              padding: 1rem 2rem;
+              border-radius: 8px;
+              text-transform: uppercase;
+              transition: transform 0.2s, background-color 0.2s;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            .build-btn:hover {
+              transform: translateY(-2px);
+              background-color: #ffd700;
+            }
+            .title {
+              font-size: 2rem;
+              font-family: serif;
+              font-weight: bold;
+              margin: 0;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+            }
+          </style>
         </head>
         <body>
-          Redirecting to HH Goa...
+          <div class="container">
+            <h1 class="title">HH GOA 2026<br><span style="color: #FEE101; font-family: monospace; font-size: 1.2rem;">BUILDER PASS</span></h1>
+            <img src="${imageUrl}" alt="HH Goa Builder Pass" class="badge-image" />
+            <a href="${appUrl}" class="build-btn">Generate Your Own Pass ⚡</a>
+          </div>
         </body>
       </html>
     `;

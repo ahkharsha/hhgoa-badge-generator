@@ -30,6 +30,9 @@ export default function App() {
   const [canvasDataUrl, setCanvasDataUrl] = useState<string>("");
   const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
   const [showSparkle, setShowSparkle] = useState<boolean>(false);
+  
+  // 3D Tilt state
+  const [tilt, setTilt] = useState({ x: 0, y: 0, active: false });
 
   // Modals state
   const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
@@ -147,22 +150,62 @@ export default function App() {
 
           {/* Right Column: Canvas Preview (Sticky on desktop) */}
           <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col items-center">
-            {/* Real-time HTML5 Canvas */}
-            <div className="relative w-full overflow-hidden">
-              <FrameCanvas
-                badgeData={badgeData}
-                activePhoto={singlePhoto}
-                onCanvasReady={handleCanvasReady}
-              />
+            {/* Real-time HTML5 Canvas with 3D Holographic Tilt */}
+            <div 
+              className="relative w-full transition-transform duration-200 ease-out perspective-1000"
+              style={{
+                transform: tilt.active 
+                  ? `perspective(1000px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale3d(1.02, 1.02, 1.02)` 
+                  : 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
+              }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate tilt degrees (max 12 degrees)
+                const rotateX = ((y - centerY) / centerY) * -12;
+                const rotateY = ((x - centerX) / centerX) * 12;
+                
+                setTilt({ x: rotateY, y: rotateX, active: true });
+              }}
+              onMouseLeave={() => setTilt({ x: 0, y: 0, active: false })}
+            >
+              <div className={`w-full overflow-hidden rounded-2xl ${tilt.active ? 'shadow-[0_20px_50px_rgba(254,225,1,0.2)]' : ''} transition-shadow duration-300`}>
+                <FrameCanvas
+                  badgeData={badgeData}
+                  activePhoto={singlePhoto}
+                  onCanvasReady={handleCanvasReady}
+                />
+              </div>
               
               {/* Sparkle Overlay Effect */}
               <div 
-                className={`absolute inset-0 bg-white z-50 pointer-events-none transition-opacity duration-500 ease-out flex items-center justify-center ${showSparkle ? 'opacity-30 mix-blend-overlay' : 'opacity-0'}`}
+                className={`absolute inset-0 bg-white z-50 pointer-events-none transition-opacity duration-500 ease-out flex items-center justify-center rounded-2xl ${showSparkle ? 'opacity-30 mix-blend-overlay' : 'opacity-0'}`}
               >
                 <div className={`transition-all duration-700 ease-out transform ${showSparkle ? 'scale-150 rotate-12 opacity-100' : 'scale-50 -rotate-12 opacity-0'}`}>
                   <Sparkles className="w-32 h-32 text-brand-accent drop-shadow-[0_0_20px_rgba(254,225,1,1)]" />
                 </div>
               </div>
+              
+              {/* Dynamic Glare Effect on Hover */}
+              {tilt.active && (
+                <div 
+                  className="absolute inset-0 z-40 pointer-events-none rounded-2xl"
+                  style={{
+                    background: `linear-gradient(
+                      105deg,
+                      transparent 20%,
+                      rgba(255, 255, 255, 0.2) 25%,
+                      transparent 30%
+                    )`,
+                    transform: `translateX(${tilt.x * 2}%) translateY(${tilt.y * 2}%)`,
+                    transition: 'transform 0.1s ease-out'
+                  }}
+                />
+              )}
             </div>
 
             {/* Primary Download & Share Bar */}

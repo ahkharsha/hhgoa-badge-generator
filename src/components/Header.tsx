@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-4">
         <img src="/assets/images/Hacker house.png" alt="HH Goa Logo" className="h-10 sm:h-14 object-contain" />
         <span className="hidden md:flex items-center justify-center bg-[var(--color-brand-pink)]/10 px-3 py-1.5 rounded-full border border-[var(--color-brand-pink)]/30">
-          <img src="/assets/images/goa_hindi.svg" alt="Goa Hindi" className="h-4 sm:h-6" style={{ filter: 'brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(3065%) hue-rotate(317deg) brightness(98%) contrast(97%)' }} />
+          <img src="/assets/images/goa_hindi.svg" alt="Goa Hindi" className="h-8 sm:h-12" style={{ filter: 'brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(3065%) hue-rotate(317deg) brightness(98%) contrast(97%)' }} />
         </span>
       </div>
 
