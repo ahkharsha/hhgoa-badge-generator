@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Header } from "./components/Header";
 import { FrameCanvas } from "./components/FrameCanvas";
 import { PhotoUploader } from "./components/PhotoUploader";
-import { BuilderFormPrimary, BuilderFormSecondary } from "./components/BuilderForm";
+import { BuilderForm } from "./components/BuilderForm";
 import { PresetGallery } from "./components/PresetGallery";
 import { ShareModal } from "./components/ShareModal";
 import { HowToGuide } from "./components/HowToGuide";
@@ -31,8 +31,8 @@ export default function App() {
   const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
   const [showSparkle, setShowSparkle] = useState<boolean>(false);
   
-  // 3D Tilt state
-  const [tilt, setTilt] = useState({ x: 0, y: 0, active: false });
+  // Ultra 3D Tilt state
+  const [tilt, setTilt] = useState({ x: 0, y: 0, active: false, px: 50, py: 50 });
 
   // Modals state
   const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
@@ -140,7 +140,7 @@ export default function App() {
               />
             )}
 
-            <BuilderFormPrimary
+            <BuilderForm
               badgeData={badgeData}
               onChange={setBadgeData}
               onGenerateAiTitle={handleGenerateAiTitle}
@@ -148,15 +148,16 @@ export default function App() {
             />
           </div>
 
-          {/* Right Column: Canvas Preview (Sticky on desktop) */}
-          <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col justify-start items-center w-full mt-12 lg:mt-0">
-            {/* Real-time HTML5 Canvas with 3D Holographic Tilt */}
+          {/* Right Column: Sticky Canvas Preview & Action Hub */}
+          <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col justify-start items-center w-full mt-6 lg:mt-0">
+            {/* Real-time HTML5 Canvas with BANGER 3D Holographic Tilt */}
             <div 
-              className="relative w-full transition-transform duration-200 ease-out perspective-1000"
+              className="relative w-full transition-transform duration-150 ease-out perspective-1000 cursor-grab active:cursor-grabbing group"
               style={{
                 transform: tilt.active 
-                  ? `perspective(1000px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale3d(1.02, 1.02, 1.02)` 
-                  : 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
+                  ? `perspective(1000px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale3d(1.04, 1.04, 1.04)` 
+                  : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
+                transformStyle: 'preserve-3d',
               }}
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -165,21 +166,61 @@ export default function App() {
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                // Calculate tilt degrees (max 12 degrees)
-                const rotateX = ((y - centerY) / centerY) * -12;
-                const rotateY = ((x - centerX) / centerX) * 12;
+                // Calculate tilt degrees (max 22 degrees for maximum banger effect)
+                const rotateX = ((y - centerY) / centerY) * -22;
+                const rotateY = ((x - centerX) / centerX) * 22;
                 
-                setTilt({ x: rotateY, y: rotateX, active: true });
+                setTilt({
+                  x: rotateY,
+                  y: rotateX,
+                  active: true,
+                  px: Math.round((x / rect.width) * 100),
+                  py: Math.round((y / rect.height) * 100)
+                });
               }}
-              onMouseLeave={() => setTilt({ x: 0, y: 0, active: false })}
+              onMouseLeave={() => setTilt({ x: 0, y: 0, active: false, px: 50, py: 50 })}
             >
-              <div className={`relative w-full overflow-hidden rounded-2xl ${tilt.active ? 'shadow-[0_20px_50px_rgba(254,225,1,0.2)]' : ''} transition-shadow duration-300 ${badgeData.rarity === 'MYTHIC' ? 'shimmer-foil' : ''}`}>
+              <div 
+                className={`relative w-full overflow-hidden rounded-2xl transition-all duration-300 ${
+                  badgeData.rarity === 'MYTHIC' ? 'shimmer-foil' : ''
+                }`}
+                style={{
+                  boxShadow: tilt.active
+                    ? `${-tilt.x * 2.5}px ${tilt.y * 2.5}px 45px rgba(0,0,0,0.8), 0 0 35px rgba(254, 225, 1, 0.45)`
+                    : '0 15px 40px rgba(0,0,0,0.6)',
+                }}
+              >
                 <FrameCanvas
                   badgeData={badgeData}
                   activePhoto={singlePhoto}
                   onCanvasReady={handleCanvasReady}
                 />
               </div>
+              
+              {/* Ultra Rainbow Hologram Glare Reflection */}
+              {tilt.active && (
+                <div 
+                  className="absolute inset-0 z-40 pointer-events-none rounded-2xl transition-opacity duration-200"
+                  style={{
+                    background: `
+                      radial-gradient(circle at ${tilt.px}% ${tilt.py}%, rgba(255, 255, 255, 0.45) 0%, rgba(254, 225, 1, 0.25) 25%, transparent 60%),
+                      linear-gradient(${tilt.px * 3.6}deg, rgba(255,0,128,0.2), rgba(0,240,255,0.2), rgba(254,225,1,0.2), transparent)
+                    `,
+                    mixBlendMode: 'overlay',
+                  }}
+                />
+              )}
+
+              {/* Holographic Border Flare */}
+              {tilt.active && (
+                <div 
+                  className="absolute -inset-0.5 rounded-2xl z-30 pointer-events-none opacity-80 transition-opacity duration-300"
+                  style={{
+                    background: `linear-gradient(${tilt.px * 3.6}deg, #fee101, #00f0ff, #ff007a, #fee101)`,
+                    filter: 'blur(4px)',
+                  }}
+                />
+              )}
               
               {/* Sparkle Overlay Effect */}
               <div 
@@ -189,27 +230,10 @@ export default function App() {
                   <Sparkles className="w-32 h-32 text-brand-accent drop-shadow-[0_0_20px_rgba(254,225,1,1)]" />
                 </div>
               </div>
-              
-              {/* Dynamic Glare Effect on Hover */}
-              {tilt.active && (
-                <div 
-                  className="absolute inset-0 z-40 pointer-events-none rounded-2xl"
-                  style={{
-                    background: `linear-gradient(
-                      105deg,
-                      transparent 20%,
-                      rgba(255, 255, 255, 0.2) 25%,
-                      transparent 30%
-                    )`,
-                    transform: `translateX(${tilt.x * 2}%) translateY(${tilt.y * 2}%)`,
-                    transition: 'transform 0.1s ease-out'
-                  }}
-                />
-              )}
             </div>
 
             {/* Primary Download & Share Bar */}
-            <div className="grid grid-cols-2 gap-4 w-full max-w-[500px]">
+            <div className="grid grid-cols-2 gap-4 w-full">
               <button
                 onClick={() => {
                   try {
@@ -224,27 +248,33 @@ export default function App() {
                     alert("Failed to export image. Please try again.");
                   }
                 }}
-                className="bg-brand-accent text-brand-primary font-black py-4 px-4 sm:px-6 uppercase tracking-tighter text-sm sm:text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer"
+                className="bg-brand-accent text-brand-primary font-black py-4 px-4 sm:px-6 uppercase tracking-tighter text-sm sm:text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer rounded-xl shadow-lg flex items-center justify-center gap-2"
               >
-                Download Image
+                <Download className="w-5 h-5" />
+                Download PNG
               </button>
 
               <button
                 onClick={() => setIsShareOpen(true)}
-                className="bg-white text-brand-primary font-black py-4 px-4 sm:px-6 uppercase tracking-tighter text-sm sm:text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform cursor-pointer"
+                className="bg-white text-brand-primary font-black py-4 px-4 sm:px-6 uppercase tracking-tighter text-sm sm:text-lg flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform cursor-pointer rounded-xl shadow-lg"
               >
                 Share to X
                 <Share2 className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="w-full pt-8">
-              <BuilderFormSecondary
-                badgeData={badgeData}
-                onChange={setBadgeData}
-                onGenerateAiTitle={handleGenerateAiTitle}
-                isGeneratingAi={isGeneratingAi}
-              />
+            {/* HH Goa 2026 Radar Live Badge Card */}
+            <div className="w-full bg-slate-900/90 border border-brand-accent/30 rounded-xl p-4 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+                <div>
+                  <div className="font-bold text-brand-accent uppercase tracking-widest text-[10px]">RADAR STATUS: ACTIVE</div>
+                  <div className="text-brand-offwhite/60 text-[9px]">Verified HH Goa 2026 Builder Pass</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/30">
+                100% READY
+              </span>
             </div>
           </div>
         </div>
