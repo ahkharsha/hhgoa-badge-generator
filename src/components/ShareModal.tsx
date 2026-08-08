@@ -216,7 +216,7 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
                 className="sm:col-span-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-brand-offwhite font-bold text-sm transition cursor-pointer"
               >
                 {copiedLink ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5 text-brand-accent" />}
-                <span>{copiedLink ? "Link Copied Instantly!" : "Copy Share Link (0ms)"}</span>
+                <span>{copiedLink ? "Link Copied!" : "Copy Share Link"}</span>
               </button>
             </div>
 
