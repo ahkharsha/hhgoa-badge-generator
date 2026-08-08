@@ -15,14 +15,8 @@ export const BuilderFormPrimary: React.FC<BuilderFormProps> = ({
   badgeData,
   onChange,
 }) => {
-  return (
-
   const handleFormatChange = (format: FrameFormat) => {
     onChange({ ...badgeData, format });
-  };
-
-  const handleThemeChange = (theme: ThemeStyle) => {
-    onChange({ ...badgeData, theme });
   };
 
   const applyPreset = (presetStack: string) => {
