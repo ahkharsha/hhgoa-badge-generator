@@ -85,14 +85,9 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
   const handleCopyShareLink = async () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
     
-    // Instant 0ms share link generation using URL parameter encoding
-    const queryParams = new URLSearchParams({
-      name: badgeData.name || "",
-      role: badgeData.role || "",
-      theme: badgeData.theme || "sunset",
-      title: badgeData.builderTitle || "",
-    }).toString();
-    const shareUrl = `${window.location.origin}/?${queryParams}`;
+    // Clean, short share link format: /share/[badgeId]
+    const shortId = badgeData.badgeId || Math.random().toString(36).substring(2, 8);
+    const shareUrl = `${window.location.origin}/share/${shortId}`;
 
     try {
       if (navigator.clipboard && window.isSecureContext) {
@@ -134,13 +129,8 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
     setIsSharing(true);
     try {
-      const queryParams = new URLSearchParams({
-        name: badgeData.name || "",
-        role: badgeData.role || "",
-        theme: badgeData.theme || "sunset",
-        title: badgeData.builderTitle || "",
-      }).toString();
-      const shareUrl = `${window.location.origin}/?${queryParams}`;
+      const shortId = badgeData.badgeId || Math.random().toString(36).substring(2, 8);
+      const shareUrl = `${window.location.origin}/share/${shortId}`;
 
       const tweetText = `Hyped for HH Goa 2026! 🌴⚡\nJust generated my Builder Pass: "${badgeData.builderTitle || "AI Builder"}"\n\nGenerate your own #FrameInGoa pass in 5 seconds using this generator! 🚀\n\n${shareUrl}\n\n#FrameInGoa @HHGoa2026 #HHGoa #HackerHouseGoa`;
       

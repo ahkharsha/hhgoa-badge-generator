@@ -488,7 +488,7 @@ async function drawBadgeFormat(
   }
 
   ctx.textAlign = "left";
-  ctx.fillStyle = "#FFFFFF";
+  ctx.fillStyle = theme.text || theme.primary;
   ctx.font = "800 28px 'Imbue', serif";
   ctx.fillText("#FrameInGoa", margin + 150, footerY + 40);
 

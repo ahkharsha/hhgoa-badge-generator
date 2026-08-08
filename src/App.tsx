@@ -100,10 +100,10 @@ export default function App() {
         {/* 1-Tap Presets Bar */}
         <PresetGallery onSelectPreset={handleSelectPreset} />
 
-        {/* Top Row Grid: Step 1 (Photo Upload & Format) vs Pass Preview Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          {/* Left: Step 01 / Photo Upload & Format Selector */}
-          <div className="space-y-6">
+        {/* Main Grid: Left Form Controls vs Right Sticky Canvas Preview */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          {/* Left Column: Photo Upload & Builder Configuration Steps */}
+          <div className="space-y-8">
             {badgeData.format === "squad" ? (
               <div className="space-y-6">
                 {badgeData.teammates && badgeData.teammates.map((teammate, index) => (
@@ -136,10 +136,17 @@ export default function App() {
                 }}
               />
             )}
+
+            <BuilderForm
+              badgeData={badgeData}
+              onChange={setBadgeData}
+              onGenerateAiTitle={handleGenerateAiTitle}
+              isGeneratingAi={isGeneratingAi}
+            />
           </div>
 
-          {/* Right: Pass Preview Card & Action Bar */}
-          <div className="space-y-6 flex flex-col justify-start items-center w-full">
+          {/* Right Column: Sticky Pass Preview Card & Action Hub */}
+          <div className="space-y-6 lg:sticky lg:top-8 flex flex-col justify-start items-center w-full">
             {/* Real-time HTML5 Canvas with Clean 3D Tilt */}
             <div 
               className="relative w-full transition-transform duration-150 ease-out perspective-1000 cursor-grab active:cursor-grabbing group"
@@ -237,17 +244,21 @@ export default function App() {
                 <Share2 className="w-5 h-5" />
               </button>
             </div>
-          </div>
-        </div>
 
-        {/* Full Width Steps 2, 3, 4, 5 Grid Below Top Row */}
-        <div className="pt-8 border-t border-brand-accent/20">
-          <BuilderForm
-            badgeData={badgeData}
-            onChange={setBadgeData}
-            onGenerateAiTitle={handleGenerateAiTitle}
-            isGeneratingAi={isGeneratingAi}
-          />
+            {/* HH Goa 2026 Radar Live Badge Card */}
+            <div className="w-full bg-slate-900/90 border border-brand-accent/30 rounded-xl p-4 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+                <div>
+                  <div className="font-bold text-brand-accent uppercase tracking-widest text-[10px]">RADAR STATUS: ACTIVE</div>
+                  <div className="text-brand-offwhite/60 text-[9px]">Verified HH Goa 2026 Builder Pass</div>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/30">
+                100% READY
+              </span>
+            </div>
+          </div>
         </div>
       </main>
 

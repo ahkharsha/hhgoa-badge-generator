@@ -1,6 +1,6 @@
 export type FrameFormat = "pfp" | "badge" | "squad" | "header" | "story";
 
-export type ThemeStyle = "sunset" | "cyber" | "gold" | "monochrome";
+export type ThemeStyle = "sunset" | "cyber" | "gold" | "monochrome" | "parchment" | "solana" | "emerald" | "vaporwave";
 
 export interface PhotoConfig {
   id: string;
