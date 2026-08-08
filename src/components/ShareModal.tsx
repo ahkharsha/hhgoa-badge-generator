@@ -121,7 +121,7 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
     fetch("/api/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dataUrl: canvasDataUrl }),
+      body: JSON.stringify({ id: shortId, dataUrl: canvasDataUrl }),
     }).catch(err => console.log("Background upload skipped", err));
   };
 

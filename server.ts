@@ -51,17 +51,20 @@ async function startServer() {
   // API Route to upload shared image
   app.post("/api/share", async (req, res) => {
     try {
-      const { dataUrl } = req.body;
+      const { dataUrl, id: providedId } = req.body;
       if (!dataUrl) {
         return res.status(400).json({ error: "No image provided" });
       }
-      const id = Math.random().toString(36).substring(2, 10);
+      const id = providedId || Math.random().toString(36).substring(2, 10);
       const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
 
       let savedToDb = false;
       if (process.env.DATABASE_URL) {
         try {
-          await pool.query("INSERT INTO shares (id, image_data) VALUES ($1, $2)", [id, base64Data]);
+          await pool.query(
+            "INSERT INTO shares (id, image_data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET image_data = EXCLUDED.image_data",
+            [id, base64Data]
+          );
           savedToDb = true;
         } catch (dbErr) {
           console.error("DB Insert Failed, falling back to JSON:", dbErr);
