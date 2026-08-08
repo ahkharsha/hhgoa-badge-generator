@@ -24,7 +24,9 @@ async function startServer() {
   // Initialize PostgreSQL Pool
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 3000,
+    statement_timeout: 3000
   });
 
   if (process.env.DATABASE_URL) {
@@ -44,7 +46,7 @@ async function startServer() {
     console.log("No DATABASE_URL found. Falling back to local JSON storage.");
   }
 
-  app.use(express.json({ limit: "10mb" }));
+  app.use(express.json({ limit: "50mb" }));
 
   // API Route to upload shared image
   app.post("/api/share", async (req, res) => {
@@ -73,9 +75,9 @@ async function startServer() {
       }
       
       res.json({ id });
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      res.status(500).json({ error: "Failed to upload image" });
+      res.status(500).json({ error: e.message || e.toString(), stack: e.stack });
     }
   });
 

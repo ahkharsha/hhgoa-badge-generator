@@ -92,6 +92,9 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
         body: JSON.stringify({ dataUrl: canvasDataUrl }),
       });
       const data = await res.json();
+      if (!res.ok || !data.id) {
+        throw new Error(data.error || "Failed to upload image");
+      }
       const shareUrl = `${window.location.origin}/share/${data.id}`;
       
       // Robust clipboard copy that handles iOS/Safari async restrictions
@@ -128,9 +131,9 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
         origin: { y: 0.6 },
         colors: ["#FF5C00", "#FF007A", "#00F0FF", "#FFD700"],
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to copy share link:", err);
-      alert("Failed to generate link");
+      alert(`Failed to generate link: ${err.message}`);
     } finally {
       setIsSharing(false);
     }
@@ -147,6 +150,9 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
         body: JSON.stringify({ dataUrl: canvasDataUrl }),
       });
       const data = await res.json();
+      if (!res.ok || !data.id) {
+        throw new Error(data.error || "Failed to upload image");
+      }
       const shareUrl = `${window.location.origin}/share/${data.id}`;
 
       // 2. Pre-fill Tweet Text
@@ -158,8 +164,9 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
       
       // Trigger confetti and download just in case
       handleDownloadImage();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to generate share link:", err);
+      alert(`Failed to generate link: ${err.message}`);
       // Fallback
       handleDownloadImage();
       const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(defaultTweetText)}`;
