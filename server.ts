@@ -56,9 +56,17 @@ async function startServer() {
       const id = Math.random().toString(36).substring(2, 10);
       const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
 
+      let savedToDb = false;
       if (process.env.DATABASE_URL) {
-        await pool.query("INSERT INTO shares (id, image_data) VALUES ($1, $2)", [id, base64Data]);
-      } else {
+        try {
+          await pool.query("INSERT INTO shares (id, image_data) VALUES ($1, $2)", [id, base64Data]);
+          savedToDb = true;
+        } catch (dbErr) {
+          console.error("DB Insert Failed, falling back to JSON:", dbErr);
+        }
+      }
+      
+      if (!savedToDb) {
         const store = await readShareStore(SHARES_FILE);
         store[id] = base64Data;
         await fsp.writeFile(SHARES_FILE, JSON.stringify(store), "utf8");
@@ -76,10 +84,21 @@ async function startServer() {
     const id = req.params.id;
 
     let base64Data;
+    let foundInDb = false;
+    
     if (process.env.DATABASE_URL) {
-      const result = await pool.query("SELECT image_data FROM shares WHERE id = $1", [id]);
-      if (result.rows.length > 0) base64Data = result.rows[0].image_data;
-    } else {
+      try {
+        const result = await pool.query("SELECT image_data FROM shares WHERE id = $1", [id]);
+        if (result.rows.length > 0) {
+          base64Data = result.rows[0].image_data;
+          foundInDb = true;
+        }
+      } catch (dbErr) {
+        console.error("DB Select Failed, falling back to JSON:", dbErr);
+      }
+    }
+    
+    if (!foundInDb) {
       const store = await readShareStore(SHARES_FILE);
       base64Data = store[id];
     }

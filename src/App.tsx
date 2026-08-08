@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Header } from "./components/Header";
 import { FrameCanvas } from "./components/FrameCanvas";
 import { PhotoUploader } from "./components/PhotoUploader";
-import { BuilderForm } from "./components/BuilderForm";
+import { BuilderFormPrimary, BuilderFormSecondary } from "./components/BuilderForm";
 import { PresetGallery } from "./components/PresetGallery";
 import { ShareModal } from "./components/ShareModal";
 import { HowToGuide } from "./components/HowToGuide";
@@ -140,7 +140,7 @@ export default function App() {
               />
             )}
 
-            <BuilderForm
+            <BuilderFormPrimary
               badgeData={badgeData}
               onChange={setBadgeData}
               onGenerateAiTitle={handleGenerateAiTitle}
@@ -236,6 +236,15 @@ export default function App() {
                 Share to X
                 <Share2 className="w-5 h-5" />
               </button>
+            </div>
+
+            <div className="w-full pt-8">
+              <BuilderFormSecondary
+                badgeData={badgeData}
+                onChange={setBadgeData}
+                onGenerateAiTitle={handleGenerateAiTitle}
+                isGeneratingAi={isGeneratingAi}
+              />
             </div>
           </div>
         </div>
