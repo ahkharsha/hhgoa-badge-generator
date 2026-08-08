@@ -18,6 +18,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
   const [copiedText, setCopiedText] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   if (!isOpen) return null;
 
@@ -78,9 +80,7 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
     }
   };
 
-  const [isSharing, setIsSharing] = useState(false);
 
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const handleCopyShareLink = async () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
