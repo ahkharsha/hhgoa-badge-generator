@@ -348,6 +348,52 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
               />
               <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Enter squad designation</p>
             </div>
+            
+            {/* Dynamic Teammates Fields */}
+            <div className="space-y-4 pt-4 border-t border-brand-accent/10">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-brand-offwhite/60 block">
+                Teammate Roster //
+              </span>
+              {badgeData.teammates?.map((tm, idx) => (
+                <div key={tm.id} className="p-4 border border-brand-accent/20 bg-black/20 rounded space-y-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] uppercase tracking-widest text-brand-accent font-bold">Teammate {idx + 1}</span>
+                    {idx > 0 && (
+                       <button onClick={() => {
+                          const newTms = badgeData.teammates.filter((_, i) => i !== idx);
+                          onChange({ ...badgeData, teammates: newTms });
+                       }} className="text-[10px] text-red-400 hover:text-red-300 uppercase tracking-widest transition cursor-pointer">[ Remove ]</button>
+                    )}
+                  </div>
+                  <input type="text" placeholder="Name" value={tm.name} onChange={e => {
+                     const newTms = [...badgeData.teammates];
+                     newTms[idx] = { ...newTms[idx], name: e.target.value };
+                     onChange({ ...badgeData, teammates: newTms });
+                  }} className="w-full bg-transparent border-b border-brand-accent/30 py-1 text-sm uppercase focus:outline-none focus:border-brand-accent transition-colors" />
+                  
+                  <input type="text" placeholder="Role" value={tm.role} onChange={e => {
+                     const newTms = [...badgeData.teammates];
+                     newTms[idx] = { ...newTms[idx], role: e.target.value };
+                     onChange({ ...badgeData, teammates: newTms });
+                  }} className="w-full bg-transparent border-b border-brand-accent/30 py-1 text-sm uppercase focus:outline-none focus:border-brand-accent transition-colors" />
+                </div>
+              ))}
+              {(badgeData.teammates?.length || 0) < 4 && (
+                 <button onClick={() => {
+                    const newTms = [...(badgeData.teammates || [])];
+                    newTms.push({
+                       id: `t${Date.now()}`,
+                       name: `Teammate ${newTms.length + 1}`,
+                       role: "Builder",
+                       stack: "Web3",
+                       photo: { id: `p${Date.now()}`, url: "", zoom: 1, offsetX: 0, offsetY: 0, rotation: 0, brightness: 100, contrast: 100 }
+                    });
+                    onChange({ ...badgeData, teammates: newTms });
+                 }} className="w-full py-3 border border-dashed border-brand-accent/30 text-[10px] font-bold uppercase tracking-widest text-brand-offwhite/60 hover:text-brand-accent hover:border-brand-accent transition cursor-pointer mt-2 bg-brand-accent/5 hover:bg-brand-accent/10 rounded">
+                   + Add Teammate
+                 </button>
+              )}
+            </div>
           </div>
         )}
       </div>

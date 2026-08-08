@@ -13,7 +13,7 @@ export const DEFAULT_BADGE_DATA: BadgeData = {
   builderTitle: "Autonomous Agent Alchemist & Beach Hacker",
   motto: "Shipping LATE NIGHT multichain AI agents on the beaches of Goa.",
   archetype: "AI ALCHEMIST",
-  badgeId: "HH26-2470-GOA",
+  badgeId: Math.floor(10000 + Math.random() * 90000).toString(),
   stats: [
     { label: "SPEED", value: 96 },
     { label: "HACK", value: 98 },

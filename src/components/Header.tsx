@@ -21,12 +21,15 @@ export const Header: React.FC<HeaderProps> = ({
             <ShieldCheck className="w-3 h-3" /> ID GENERATOR
           </span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-heading font-bold leading-none uppercase flex items-center gap-3">
-          HH GOA <span className="text-[var(--color-brand-accent)]">2026</span>
-          <span className="text-xl sm:text-2xl font-bold text-[var(--color-brand-pink)] bg-[var(--color-brand-pink)]/10 px-3 py-1 rounded-full border border-[var(--color-brand-pink)]/30 font-sans tracking-normal hidden md:inline-block">
-            गोवा
-          </span>
-        </h1>
+        <div className="flex items-center gap-4">
+          <img src="/assets/images/Hacker house.png" alt="HH Goa Logo" className="h-10 sm:h-16 object-contain" />
+          <h1 className="text-4xl sm:text-6xl font-heading font-bold leading-none uppercase flex items-center gap-3">
+            HH GOA <span className="text-[var(--color-brand-accent)]">2026</span>
+            <span className="hidden md:flex items-center justify-center bg-[var(--color-brand-pink)]/10 px-3 py-1.5 rounded-full border border-[var(--color-brand-pink)]/30">
+              <img src="/assets/images/goa_hindi.svg" alt="Goa Hindi" className="h-4 sm:h-6" style={{ filter: 'brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(3065%) hue-rotate(317deg) brightness(98%) contrast(97%)' }} />
+            </span>
+          </h1>
+        </div>
       </div>
 
       <div className="flex flex-col items-start sm:items-end gap-2 sm:text-right">

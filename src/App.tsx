@@ -101,18 +101,41 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Left Column: Photo Upload & Builder Configuration Form */}
           <div className="space-y-8 order-2 lg:order-1">
-            <PhotoUploader
-              photo={singlePhoto}
-              onPhotoChange={(newPhoto) => {
-                setSinglePhoto(newPhoto);
-                // Also update squad teammate 0 if squad format
-                if (badgeData.teammates && badgeData.teammates[0]) {
-                  const updatedTms = [...badgeData.teammates];
-                  updatedTms[0] = { ...updatedTms[0], photo: newPhoto };
-                  setBadgeData({ ...badgeData, teammates: updatedTms });
-                }
-              }}
-            />
+            {badgeData.format === "squad" ? (
+              <div className="space-y-8">
+                {badgeData.teammates && badgeData.teammates.map((teammate, index) => (
+                  <div key={teammate.id || index} className="space-y-2">
+                    <h3 className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em] mb-2">
+                      {teammate.name || `Teammate ${index + 1}`} Photo
+                    </h3>
+                    <PhotoUploader
+                      photo={teammate.photo}
+                      onPhotoChange={(newPhoto) => {
+                        const updatedTms = [...badgeData.teammates];
+                        updatedTms[index] = { ...updatedTms[index], photo: newPhoto };
+                        setBadgeData({ ...badgeData, teammates: updatedTms });
+                        
+                        // Sync first teammate to singlePhoto for preview flexibility
+                        if (index === 0) setSinglePhoto(newPhoto);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <PhotoUploader
+                photo={singlePhoto}
+                onPhotoChange={(newPhoto) => {
+                  setSinglePhoto(newPhoto);
+                  // Also update squad teammate 0 if squad format
+                  if (badgeData.teammates && badgeData.teammates[0]) {
+                    const updatedTms = [...badgeData.teammates];
+                    updatedTms[0] = { ...updatedTms[0], photo: newPhoto };
+                    setBadgeData({ ...badgeData, teammates: updatedTms });
+                  }
+                }}
+              />
+            )}
 
             <BuilderForm
               badgeData={badgeData}
@@ -146,10 +169,17 @@ export default function App() {
             <div className="grid grid-cols-2 gap-4 w-full max-w-[500px]">
               <button
                 onClick={() => {
-                  const link = document.createElement("a");
-                  link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}.png`;
-                  link.href = canvasDataUrl;
-                  link.click();
+                  try {
+                    const link = document.createElement("a");
+                    link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}.png`;
+                    link.href = canvasDataUrl;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  } catch (e) {
+                    console.error("Export failed:", e);
+                    alert("Failed to export image. Please try again.");
+                  }
                 }}
                 className="bg-brand-accent text-brand-primary font-black py-4 px-4 sm:px-6 uppercase tracking-tighter text-sm sm:text-lg hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer"
               >
@@ -182,8 +212,11 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center text-brand-offwhite/60 font-mono text-[10px] uppercase tracking-widest gap-4">
-        <div>#FRAMEINGOA // JOIN THE RADAR</div>
+      <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center text-brand-offwhite/60 font-mono text-[10px] uppercase tracking-widest gap-6">
+        <div className="flex items-center gap-4">
+          <img src="/assets/images/2-47.svg" alt="2:47 pm Studio" className="h-6 opacity-80 hover:opacity-100 transition-opacity" style={{ filter: 'brightness(0) invert(1)' }} />
+          <span>#FRAMEINGOA // JOIN THE RADAR</span>
+        </div>
         <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
           <span>LAT: 15.2993° N</span>
           <span>LONG: 74.1240° E</span>

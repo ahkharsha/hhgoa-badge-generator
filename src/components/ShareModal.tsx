@@ -32,18 +32,25 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
   const handleDownloadImage = () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
     if (!canvasDataUrl) return;
-    const link = document.createElement("a");
-    link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}-${badgeData.format}.png`;
-    link.href = canvasDataUrl;
-    link.click();
+    try {
+      const link = document.createElement("a");
+      link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}-${badgeData.format}.png`;
+      link.href = canvasDataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-    // Trigger celebratory confetti
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ["#FF5C00", "#FF007A", "#00F0FF", "#FFD700"],
-    });
+      // Trigger celebratory confetti
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#FF5C00", "#FF007A", "#00F0FF", "#FFD700"],
+      });
+    } catch (e) {
+      console.error("Export failed:", e);
+      alert("Failed to export image. Please try again.");
+    }
   };
 
   const handleCopyText = () => {
