@@ -100,12 +100,12 @@ export default function App() {
         {/* 1-Tap Presets Bar */}
         <PresetGallery onSelectPreset={handleSelectPreset} />
 
-        {/* Main Grid: Live Canvas Preview vs Builder Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column: Photo Upload & Builder Configuration Form */}
-          <div className="space-y-8 order-2 lg:order-1">
+        {/* Top Row Grid: Step 1 (Photo Upload & Format) vs Pass Preview Card */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left: Step 01 / Photo Upload & Format Selector */}
+          <div className="space-y-6">
             {badgeData.format === "squad" ? (
-              <div className="space-y-8">
+              <div className="space-y-6">
                 {badgeData.teammates && badgeData.teammates.map((teammate, index) => (
                   <div key={teammate.id || index} className="space-y-2">
                     <h3 className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em] mb-2">
@@ -117,8 +117,6 @@ export default function App() {
                         const updatedTms = [...badgeData.teammates];
                         updatedTms[index] = { ...updatedTms[index], photo: newPhoto };
                         setBadgeData({ ...badgeData, teammates: updatedTms });
-                        
-                        // Sync first teammate to singlePhoto for preview flexibility
                         if (index === 0) setSinglePhoto(newPhoto);
                       }}
                     />
@@ -130,7 +128,6 @@ export default function App() {
                 photo={singlePhoto}
                 onPhotoChange={(newPhoto) => {
                   setSinglePhoto(newPhoto);
-                  // Also update squad teammate 0 if squad format
                   if (badgeData.teammates && badgeData.teammates[0]) {
                     const updatedTms = [...badgeData.teammates];
                     updatedTms[0] = { ...updatedTms[0], photo: newPhoto };
@@ -139,23 +136,16 @@ export default function App() {
                 }}
               />
             )}
-
-            <BuilderForm
-              badgeData={badgeData}
-              onChange={setBadgeData}
-              onGenerateAiTitle={handleGenerateAiTitle}
-              isGeneratingAi={isGeneratingAi}
-            />
           </div>
 
-          {/* Right Column: Sticky Canvas Preview & Action Hub */}
-          <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col justify-start items-center w-full mt-6 lg:mt-0">
-            {/* Real-time HTML5 Canvas with BANGER 3D Holographic Tilt */}
+          {/* Right: Pass Preview Card & Action Bar */}
+          <div className="space-y-6 flex flex-col justify-start items-center w-full">
+            {/* Real-time HTML5 Canvas with Clean 3D Tilt */}
             <div 
               className="relative w-full transition-transform duration-150 ease-out perspective-1000 cursor-grab active:cursor-grabbing group"
               style={{
                 transform: tilt.active 
-                  ? `perspective(1000px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale3d(1.04, 1.04, 1.04)` 
+                  ? `perspective(1000px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg) scale3d(1.02, 1.02, 1.02)` 
                   : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
                 transformStyle: 'preserve-3d',
               }}
@@ -166,9 +156,8 @@ export default function App() {
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
                 
-                // Calculate tilt degrees (max 22 degrees for maximum banger effect)
-                const rotateX = ((y - centerY) / centerY) * -22;
-                const rotateY = ((x - centerX) / centerX) * 22;
+                const rotateX = ((y - centerY) / centerY) * -16;
+                const rotateY = ((x - centerX) / centerX) * 16;
                 
                 setTilt({
                   x: rotateY,
@@ -186,7 +175,7 @@ export default function App() {
                 }`}
                 style={{
                   boxShadow: tilt.active
-                    ? `${-tilt.x * 2.5}px ${tilt.y * 2.5}px 45px rgba(0,0,0,0.8), 0 0 35px rgba(254, 225, 1, 0.45)`
+                    ? `${-tilt.x * 2}px ${tilt.y * 2}px 35px rgba(0,0,0,0.7), 0 0 25px rgba(254, 225, 1, 0.3)`
                     : '0 15px 40px rgba(0,0,0,0.6)',
                 }}
               >
@@ -197,27 +186,13 @@ export default function App() {
                 />
               </div>
               
-              {/* Ultra Rainbow Hologram Glare Reflection */}
+              {/* Clean Glossy Sheen Reflection */}
               {tilt.active && (
                 <div 
                   className="absolute inset-0 z-40 pointer-events-none rounded-2xl transition-opacity duration-200"
                   style={{
-                    background: `
-                      radial-gradient(circle at ${tilt.px}% ${tilt.py}%, rgba(255, 255, 255, 0.45) 0%, rgba(254, 225, 1, 0.25) 25%, transparent 60%),
-                      linear-gradient(${tilt.px * 3.6}deg, rgba(255,0,128,0.2), rgba(0,240,255,0.2), rgba(254,225,1,0.2), transparent)
-                    `,
-                    mixBlendMode: 'overlay',
-                  }}
-                />
-              )}
-
-              {/* Holographic Border Flare */}
-              {tilt.active && (
-                <div 
-                  className="absolute -inset-0.5 rounded-2xl z-30 pointer-events-none opacity-80 transition-opacity duration-300"
-                  style={{
-                    background: `linear-gradient(${tilt.px * 3.6}deg, #fee101, #00f0ff, #ff007a, #fee101)`,
-                    filter: 'blur(4px)',
+                    background: `linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.22) 50%, transparent 65%)`,
+                    transform: `translateX(${(tilt.px - 50) * 0.3}%) translateY(${(tilt.py - 50) * 0.3}%)`,
                   }}
                 />
               )}
@@ -262,21 +237,18 @@ export default function App() {
                 <Share2 className="w-5 h-5" />
               </button>
             </div>
-
-            {/* HH Goa 2026 Radar Live Badge Card */}
-            <div className="w-full bg-slate-900/90 border border-brand-accent/30 rounded-xl p-4 flex items-center justify-between text-xs font-mono">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-                <div>
-                  <div className="font-bold text-brand-accent uppercase tracking-widest text-[10px]">RADAR STATUS: ACTIVE</div>
-                  <div className="text-brand-offwhite/60 text-[9px]">Verified HH Goa 2026 Builder Pass</div>
-                </div>
-              </div>
-              <span className="text-[10px] font-bold tracking-widest text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded border border-emerald-400/30">
-                100% READY
-              </span>
-            </div>
           </div>
+        </div>
+
+        {/* Full Width Steps 2, 3, 4, 5 Grid Below Top Row */}
+        <div className="pt-8 border-t border-brand-accent/20">
+          <BuilderForm
+            badgeData={badgeData}
+            onChange={setBadgeData}
+            onGenerateAiTitle={handleGenerateAiTitle}
+            isGeneratingAi={isGeneratingAi}
+          />
+        </div>
         </div>
       </main>
 

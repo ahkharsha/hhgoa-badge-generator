@@ -177,6 +177,11 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
               alt="Selected preview"
               className="w-16 h-16 rounded-full object-cover border-2 border-brand-accent grayscale contrast-125"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                // Replace with fallback icon on broken image load
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='none' stroke='%23fee101' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
+              }}
             />
             <p className="text-[10px] text-brand-accent font-mono uppercase tracking-widest">Photo Active / Click to Swap</p>
           </div>

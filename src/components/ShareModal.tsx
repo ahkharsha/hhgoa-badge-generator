@@ -84,90 +84,72 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
 
   const handleCopyShareLink = async () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
-    setIsSharing(true);
+    
+    // Instant 0ms share link generation using URL parameter encoding
+    const queryParams = new URLSearchParams({
+      name: badgeData.name || "",
+      role: badgeData.role || "",
+      theme: badgeData.theme || "sunset",
+      title: badgeData.builderTitle || "",
+    }).toString();
+    const shareUrl = `${window.location.origin}/?${queryParams}`;
+
     try {
-      const res = await fetch("/api/share", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dataUrl: canvasDataUrl }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.id) {
-        throw new Error(data.error || "Failed to upload image");
-      }
-      const shareUrl = `${window.location.origin}/share/${data.id}`;
-      
-      // Robust clipboard copy that handles iOS/Safari async restrictions
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(shareUrl);
-        } else {
-          throw new Error("Clipboard API not available");
-        }
-      } catch (clipErr) {
-        // Fallback for older browsers or strict async clipboard policies
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
         const textArea = document.createElement("textarea");
         textArea.value = shareUrl;
         textArea.style.position = "fixed";
         textArea.style.left = "-999999px";
-        textArea.style.top = "-999999px";
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        try {
-          document.execCommand('copy');
-        } catch (fallbackErr) {
-          console.error("Fallback copy failed", fallbackErr);
-        }
+        document.execCommand('copy');
         document.body.removeChild(textArea);
       }
-
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
-
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ["#FF5C00", "#FF007A", "#00F0FF", "#FFD700"],
-      });
-    } catch (err: any) {
-      console.error("Failed to copy share link:", err);
-      alert(`Failed to generate link: ${err.message}`);
-    } finally {
-      setIsSharing(false);
+    } catch (e) {
+      console.error("Instant copy error", e);
     }
+
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2500);
+
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#FF5C00", "#FF007A", "#00F0FF", "#FFD700"],
+    });
+
+    // Background server upload (non-blocking)
+    fetch("/api/share", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dataUrl: canvasDataUrl }),
+    }).catch(err => console.log("Background upload skipped", err));
   };
 
   const handleOpenXIntent = async () => {
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
     setIsSharing(true);
     try {
-      // 1. Upload to get a shareable URL with OG Tags
-      const res = await fetch("/api/share", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dataUrl: canvasDataUrl }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.id) {
-        throw new Error(data.error || "Failed to upload image");
-      }
-      const shareUrl = `${window.location.origin}/share/${data.id}`;
+      const queryParams = new URLSearchParams({
+        name: badgeData.name || "",
+        role: badgeData.role || "",
+        theme: badgeData.theme || "sunset",
+        title: badgeData.builderTitle || "",
+      }).toString();
+      const shareUrl = `${window.location.origin}/?${queryParams}`;
 
-      // 2. Pre-fill Tweet Text
       const tweetText = `Hyped for HH Goa 2026! 🌴⚡\nJust generated my Builder Pass: "${badgeData.builderTitle || "AI Builder"}"\n\nGenerate your own #FrameInGoa pass in 5 seconds using this generator! 🚀\n\n${shareUrl}\n\n#FrameInGoa @HHGoa2026 #HHGoa #HackerHouseGoa`;
       
-      // 3. Open X Intent
       const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
       window.open(tweetUrl, "_blank", "noopener,noreferrer");
       
-      // Trigger confetti and download just in case
       handleDownloadImage();
     } catch (err: any) {
       console.error("Failed to generate share link:", err);
-      alert(`Failed to generate link: ${err.message}`);
-      // Fallback
       handleDownloadImage();
       const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(defaultTweetText)}`;
       window.open(tweetUrl, "_blank", "noopener,noreferrer");
@@ -177,18 +159,18 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full p-6 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 lg:p-8 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-5xl w-full p-6 sm:p-8 shadow-2xl relative">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-brand-offwhite transition cursor-pointer"
+          className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-brand-offwhite transition cursor-pointer z-10"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-brand-accent/10 border border-brand-accent/30 flex items-center justify-center text-brand-accent">
             <Share2 className="w-6 h-6" />
           </div>
@@ -202,88 +184,89 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
           </div>
         </div>
 
-        {/* Generated Graphic Preview */}
-        {canvasDataUrl && (
-          <div className="relative group bg-slate-950 p-3 rounded-2xl border border-slate-800 flex justify-center">
-            <img
-              src={canvasDataUrl}
-              alt="Generated HH Goa Badge"
-              className="max-h-72 w-auto rounded-xl shadow-xl object-contain"
-            />
-            <div className="absolute top-5 right-5 bg-slate-900/90 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-xs font-mono font-bold backdrop-blur-md">
-              1080p High Resolution
+        {/* 2-Column Desktop Grid with NO SCROLLING */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          {/* Left Column: Graphic Preview */}
+          {canvasDataUrl && (
+            <div className="relative group bg-slate-950 p-4 rounded-2xl border border-slate-800 flex items-center justify-center min-h-[280px]">
+              <img
+                src={canvasDataUrl}
+                alt="Generated HH Goa Badge"
+                className="max-h-72 w-auto rounded-xl shadow-xl object-contain"
+              />
+              <div className="absolute top-4 right-4 bg-slate-900/90 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-xs font-mono font-bold backdrop-blur-md">
+                1080p High Resolution
+              </div>
+            </div>
+          )}
+
+          {/* Right Column: Actions & Caption */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={handleOpenXIntent}
+                disabled={isSharing}
+                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-cyan-500 hover:opacity-95 text-brand-offwhite font-extrabold text-xs sm:text-sm shadow-xl shadow-orange-500/20 transition cursor-pointer active:scale-95 disabled:opacity-50"
+              >
+                <Share2 className="w-4 h-4" />
+                <span>1-Click Post to X</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+              </button>
+
+              <button
+                onClick={handleDownloadImage}
+                className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-brand-offwhite font-bold text-xs sm:text-sm transition cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-orange-400" />
+                <span>Download PNG</span>
+              </button>
+
+              <button
+                onClick={handleCopyShareLink}
+                className="sm:col-span-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-brand-offwhite font-bold text-sm transition cursor-pointer"
+              >
+                {copiedLink ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5 text-brand-accent" />}
+                <span>{copiedLink ? "Link Copied Instantly!" : "Copy Share Link (0ms)"}</span>
+              </button>
+            </div>
+
+            {/* Pre-written Tweet Caption Box */}
+            <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-300 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  Pre-Written X Caption
+                </span>
+                <button
+                  onClick={handleCopyText}
+                  className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer font-semibold"
+                >
+                  {copiedText ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Caption</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <textarea
+                readOnly
+                value={defaultTweetText}
+                rows={3}
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 font-mono resize-none focus:outline-none"
+              />
             </div>
           </div>
-        )}
-
-        {/* Primary Action Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Post to X Button */}
-          <button
-            onClick={handleOpenXIntent}
-            disabled={isSharing}
-            className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 via-pink-500 to-cyan-500 hover:opacity-95 text-brand-offwhite font-extrabold text-sm shadow-xl shadow-orange-500/20 transition cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Share2 className="w-5 h-5" />
-            <span>{isSharing ? "Generating Link..." : "1-Click Post to X"}</span>
-            <ExternalLink className="w-4 h-4 ml-1 opacity-80" />
-          </button>
-
-          {/* Download Image Button */}
-          <button
-            onClick={handleDownloadImage}
-            className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-brand-offwhite font-bold text-sm transition cursor-pointer"
-          >
-            <Download className="w-5 h-5 text-orange-400" />
-            <span>Download PNG Image</span>
-          </button>
-
-          {/* Copy Share Link Button */}
-          <button
-            onClick={handleCopyShareLink}
-            disabled={isSharing}
-            className="sm:col-span-2 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-brand-offwhite font-bold text-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {copiedLink ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5 text-brand-accent" />}
-            <span>{copiedLink ? "Link Copied!" : "Copy Share Link"}</span>
-          </button>
-        </div>
-
-        {/* Pre-written Tweet Caption Box */}
-        <div className="space-y-2 bg-slate-950 p-4 rounded-2xl border border-slate-800">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-slate-300 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              Pre-Written X Tweet Caption
-            </span>
-            <button
-              onClick={handleCopyText}
-              className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 cursor-pointer font-semibold"
-            >
-              {copiedText ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Caption</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          <textarea
-            readOnly
-            value={defaultTweetText}
-            rows={4}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 font-mono resize-none focus:outline-none"
-          />
         </div>
 
         {/* Required Qualification Warning */}
-        <div className="p-3.5 bg-orange-500/10 border border-orange-500/30 rounded-xl text-xs text-orange-300 flex items-start gap-2.5">
+        <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-xl text-xs text-orange-300 flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
           <p>
             <strong>Pro Tip:</strong> Your X post uses the hashtag <span className="font-bold underline">#FrameInGoa</span> so other builders and mentors can easily discover your builder profile!
