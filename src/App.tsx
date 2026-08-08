@@ -212,11 +212,8 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center text-brand-offwhite/60 font-mono text-[10px] uppercase tracking-widest gap-6">
-        <div className="flex items-center gap-4">
-          <img src="/assets/images/2-47.svg" alt="2:47 pm Studio" className="h-6 opacity-80 hover:opacity-100 transition-opacity" style={{ filter: 'brightness(0) invert(1)' }} />
-          <span>#FRAMEINGOA // JOIN THE RADAR</span>
-        </div>
+      <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center text-brand-offwhite/60 font-mono text-[10px] uppercase tracking-widest gap-4">
+        <div>#FRAMEINGOA // JOIN THE RADAR</div>
         <div className="flex flex-wrap justify-center gap-4 sm:gap-8">
           <span>LAT: 15.2993° N</span>
           <span>LONG: 74.1240° E</span>
