@@ -71,19 +71,7 @@ async function startServer() {
       return res.redirect("/");
     }
     
-    // Use x-forwarded headers if behind a proxy
-    async function readShareStore(filePath: string): Promise<Record<string, string>> {
-      try {
-        const raw = await fsp.readFile(filePath, "utf8");
-        const parsed = JSON.parse(raw) as Record<string, string>;
-        return parsed && typeof parsed === "object" ? parsed : {};
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-          return {};
-        }
-        throw error;
-      }
-    }
+
     const host = req.headers["x-forwarded-host"] || req.get("host");
     const protocol = req.headers["x-forwarded-proto"] || req.protocol;
     
@@ -272,6 +260,19 @@ function generateFallbackStats(stack?: string) {
 function generateFallbackRarity(): string {
   const rarities = ["COMMON", "RARE", "EPIC", "LEGENDARY", "MYTHIC"];
   return rarities[Math.floor(Math.random() * rarities.length)];
+}
+
+async function readShareStore(filePath: string): Promise<Record<string, string>> {
+  try {
+    const raw = await fsp.readFile(filePath, "utf8");
+    const parsed = JSON.parse(raw) as Record<string, string>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return {};
+    }
+    throw error;
+  }
 }
 
 startServer();
