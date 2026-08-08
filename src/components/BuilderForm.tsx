@@ -179,8 +179,6 @@ export const BuilderFormPrimary: React.FC<BuilderFormProps> = ({
             ))}
           </div>
         </div>
-
-        )}
       </div>
     </div>
   );
