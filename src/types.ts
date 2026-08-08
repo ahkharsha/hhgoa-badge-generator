@@ -26,6 +26,7 @@ export interface BadgeData {
   theme: ThemeStyle;
   // Single Builder Info
   name: string;
+  xHandle?: string; // e.g. "HackerHouseGoa"
   role: string; // e.g. "AI & Crypto Builder"
   stack: string; // e.g. "React • Solana • Gemini API • Rust"
   builderTitle: string; // e.g. "Autonomous AI Agent Whisperer & Beach Hacker"

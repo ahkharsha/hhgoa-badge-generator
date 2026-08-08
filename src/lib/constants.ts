@@ -8,6 +8,7 @@ export const DEFAULT_BADGE_DATA: BadgeData = {
   format: "badge",
   theme: "sunset",
   name: "Jane Doe",
+  xHandle: "HackerHouseGoa",
   role: "AI & Web3 Full-Stack Developer",
   stack: "TypeScript • Solana • Gemini • Python",
   builderTitle: "Autonomous Agent Alchemist & Beach Hacker",

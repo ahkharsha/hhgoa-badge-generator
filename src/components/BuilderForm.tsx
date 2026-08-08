@@ -116,6 +116,28 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
           <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Enter your builder name as it will appear on the ID</p>
         </div>
 
+        {/* X (Twitter) Handle */}
+        <div>
+          <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold flex items-center gap-2">
+            X (Twitter) Handle <span className="bg-brand-accent text-brand-primary px-1.5 py-0.5 rounded text-[8px]">NETWORKING</span>
+          </label>
+          <div className="relative">
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 text-brand-accent/50 text-xl font-bold">@</span>
+            <input
+              type="text"
+              value={badgeData.xHandle || ""}
+              onChange={(e) => {
+                let val = e.target.value.trim();
+                if (val.startsWith("@")) val = val.substring(1);
+                onChange({ ...badgeData, xHandle: val });
+              }}
+              placeholder="HackerHouseGoa"
+              className="w-full bg-transparent border-b-2 border-brand-accent/30 py-2 sm:py-3 pl-8 text-xl sm:text-2xl font-bold focus:outline-none focus:border-brand-accent placeholder:opacity-20 transition-colors"
+            />
+          </div>
+          <p className="text-[10px] text-brand-offwhite/60 mt-2 uppercase tracking-widest font-mono">Generates a dynamic QR code for IRL networking</p>
+        </div>
+
         {/* Role & Stack */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>

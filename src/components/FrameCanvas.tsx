@@ -74,6 +74,11 @@ export const FrameCanvas: React.FC<FrameCanvasProps> = ({
         await drawHolographicStamp(ctx, width, height, badgeData.stamp, theme);
       }
 
+      // 3.5 Holographic Foil for MYTHIC rarity
+      if (badgeData.rarity === "MYTHIC") {
+        drawHolographicFoil(ctx, width, height);
+      }
+
       // 4. CRT Scanlines Effect
       if (badgeData.scanlines) {
         drawScanlines(ctx, width, height);
@@ -479,7 +484,7 @@ async function drawBadgeFormat(
   const footerY = height - margin - 120;
   ctx.save();
   if (badgeData.showQrCode) {
-    await drawCanvasQrCode(ctx, margin + 40, footerY, 90, theme);
+    await drawCanvasQrCode(ctx, margin + 40, footerY, 90, theme, badgeData);
   }
 
   ctx.textAlign = "left";
@@ -903,14 +908,16 @@ async function drawCanvasQrCode(
   x: number,
   y: number,
   size: number,
-  theme: typeof THEMES.sunset
+  theme: typeof THEMES.sunset,
+  badgeData: BadgeData
 ) {
   ctx.save();
   ctx.fillStyle = "#FFFFFF";
   roundRect(ctx, x, y, size, size, 12, true, false);
 
   try {
-    const qrDataUrl = await QRCode.toDataURL(window.location.origin, {
+    const url = badgeData.xHandle ? `https://x.com/${badgeData.xHandle}` : window.location.origin;
+    const qrDataUrl = await QRCode.toDataURL(url, {
       margin: 1,
       color: {
         dark: "#090D16",
@@ -1099,4 +1106,36 @@ function truncateText(
     str = str.slice(0, -1);
   }
   return str + "...";
+}
+
+function drawHolographicFoil(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  ctx.save();
+  ctx.globalCompositeOperation = "screen";
+  
+  // Rainbow gradient
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "rgba(255, 0, 128, 0.35)");
+  gradient.addColorStop(0.25, "rgba(255, 255, 0, 0.25)");
+  gradient.addColorStop(0.5, "rgba(0, 255, 255, 0.35)");
+  gradient.addColorStop(0.75, "rgba(0, 255, 0, 0.25)");
+  gradient.addColorStop(1, "rgba(128, 0, 255, 0.35)");
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  
+  // Diagonal foil light reflections
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+  ctx.lineWidth = Math.min(width, height) * 0.15;
+  
+  ctx.beginPath();
+  ctx.moveTo(0, height * 1.2);
+  ctx.lineTo(width * 1.2, 0);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.moveTo(-width * 0.2, height);
+  ctx.lineTo(width, -height * 0.2);
+  ctx.stroke();
+  
+  ctx.restore();
 }
