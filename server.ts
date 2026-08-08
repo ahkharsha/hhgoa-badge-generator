@@ -5,6 +5,8 @@ import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import { promises as fsp } from "fs";
+import pg from "pg";
+const { Pool } = pg;
 
 dotenv.config();
 
@@ -12,12 +14,34 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Initialize file-backed share storage
+  // Initialize file-backed share storage (Fallback)
   const DATA_DIR = path.join(process.cwd(), ".data");
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   const SHARES_FILE = path.join(DATA_DIR, "shares.json");
+
+  // Initialize PostgreSQL Pool
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  if (process.env.DATABASE_URL) {
+    try {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS shares (
+          id VARCHAR(50) PRIMARY KEY,
+          image_data TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      console.log("PostgreSQL Database connected and table verified.");
+    } catch (err) {
+      console.error("Failed to initialize PostgreSQL:", err);
+    }
+  } else {
+    console.log("No DATABASE_URL found. Falling back to local JSON storage.");
+  }
 
   app.use(express.json({ limit: "10mb" }));
 
@@ -31,9 +55,13 @@ async function startServer() {
       const id = Math.random().toString(36).substring(2, 10);
       const base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
 
-      const store = await readShareStore(SHARES_FILE);
-      store[id] = base64Data;
-      await fsp.writeFile(SHARES_FILE, JSON.stringify(store), "utf8");
+      if (process.env.DATABASE_URL) {
+        await pool.query("INSERT INTO shares (id, image_data) VALUES ($1, $2)", [id, base64Data]);
+      } else {
+        const store = await readShareStore(SHARES_FILE);
+        store[id] = base64Data;
+        await fsp.writeFile(SHARES_FILE, JSON.stringify(store), "utf8");
+      }
       
       res.json({ id });
     } catch (e) {
@@ -46,8 +74,14 @@ async function startServer() {
   app.get("/api/share/image/:id", async (req, res) => {
     const id = req.params.id;
 
-    const store = await readShareStore(SHARES_FILE);
-    const base64Data = store[id];
+    let base64Data;
+    if (process.env.DATABASE_URL) {
+      const result = await pool.query("SELECT image_data FROM shares WHERE id = $1", [id]);
+      if (result.rows.length > 0) base64Data = result.rows[0].image_data;
+    } else {
+      const store = await readShareStore(SHARES_FILE);
+      base64Data = store[id];
+    }
 
     if (!base64Data) {
       return res.status(404).send("Image not found");
@@ -65,9 +99,16 @@ async function startServer() {
   app.get("/share/:id", async (req, res) => {
     const id = req.params.id;
 
-    const store = await readShareStore(SHARES_FILE);
+    let exists = false;
+    if (process.env.DATABASE_URL) {
+      const result = await pool.query("SELECT 1 FROM shares WHERE id = $1", [id]);
+      exists = result.rows.length > 0;
+    } else {
+      const store = await readShareStore(SHARES_FILE);
+      exists = !!store[id];
+    }
 
-    if (!store[id]) {
+    if (!exists) {
       return res.redirect("/");
     }
     
