@@ -11,48 +11,36 @@ export const Header: React.FC<HeaderProps> = ({
   onQuickShare,
 }) => {
   return (
-    <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 border-b border-[var(--color-brand-accent)] pb-4 transition-all w-full bg-transparent z-40">
-      <div className="flex flex-col mb-4 sm:mb-0">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[var(--color-brand-accent)] font-mono text-[10px] sm:text-xs tracking-widest uppercase bg-[var(--color-brand-accent)]/10 border border-[var(--color-brand-accent)]/30 px-2 py-0.5 rounded">
-            HH GOA // 28-31 OCT 2026
-          </span>
-          <span className="text-[var(--color-brand-pink)] font-mono text-[10px] sm:text-xs tracking-widest uppercase bg-[var(--color-brand-pink)]/10 border border-[var(--color-brand-pink)]/30 px-2 py-0.5 rounded flex items-center gap-1 font-bold">
-            <ShieldCheck className="w-3 h-3" /> ID GENERATOR
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <img src="/assets/images/Hacker house.png" alt="HH Goa Logo" className="h-10 sm:h-16 object-contain" />
-          <h1 className="text-4xl sm:text-6xl font-heading font-bold leading-none uppercase flex items-center gap-3">
-            HH GOA <span className="text-[var(--color-brand-accent)]">2026</span>
-            <span className="hidden md:flex items-center justify-center bg-[var(--color-brand-pink)]/10 px-3 py-1.5 rounded-full border border-[var(--color-brand-pink)]/30">
-              <img src="/assets/images/goa_hindi.svg" alt="Goa Hindi" className="h-4 sm:h-6" style={{ filter: 'brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(3065%) hue-rotate(317deg) brightness(98%) contrast(97%)' }} />
-            </span>
-          </h1>
-        </div>
+    <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b border-[var(--color-brand-accent)] pb-4 transition-all w-full bg-transparent z-40 gap-4">
+      <div className="flex items-center gap-4">
+        <img src="/assets/images/Hacker house.png" alt="HH Goa Logo" className="h-10 sm:h-14 object-contain" />
+        <span className="hidden md:flex items-center justify-center bg-[var(--color-brand-pink)]/10 px-3 py-1.5 rounded-full border border-[var(--color-brand-pink)]/30">
+          <img src="/assets/images/goa_hindi.svg" alt="Goa Hindi" className="h-4 sm:h-6" style={{ filter: 'brightness(0) saturate(100%) invert(32%) sepia(85%) saturate(3065%) hue-rotate(317deg) brightness(98%) contrast(97%)' }} />
+        </span>
       </div>
 
-      <div className="flex flex-col items-start sm:items-end gap-2 sm:text-right">
-        <div className="flex items-center gap-3 mb-1">
-          <button
-            onClick={onOpenHowTo}
-            className="text-[11px] font-mono uppercase text-[var(--color-brand-offwhite)] hover:text-[var(--color-brand-accent)] transition flex items-center gap-1.5 cursor-pointer bg-black/20 hover:bg-brand-primary/40 px-3 py-1.5 border border-[var(--color-brand-accent)]/30 rounded-lg"
-          >
-            <HelpCircle className="w-3.5 h-3.5 text-[var(--color-brand-accent)]" />
-            <span>Guide & Features</span>
-          </button>
-        </div>
+      <div className="flex items-center gap-6">
+        <img src="/assets/images/2-47.svg" alt="2:47 pm Studio" className="h-4 sm:h-5 opacity-80" style={{ filter: 'brightness(0) invert(1)' }} />
         
-        <button
-          onClick={onQuickShare}
-          className="text-[11px] sm:text-xs font-bold tracking-widest uppercase flex items-center gap-2 bg-[var(--color-brand-accent)] text-[var(--color-brand-primary)] px-4 py-2 rounded-lg hover:opacity-90 transition cursor-pointer font-mono"
-        >
-          <Sparkles className="w-4 h-4 fill-[var(--color-brand-primary)]" />
-          <span>Generate & Export</span>
-          <Share2 className="w-4 h-4" />
-        </button>
+        <div className="flex flex-col items-end gap-2 text-right">
+          <div className="flex gap-2">
+            <button
+              onClick={onOpenHowTo}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-[10px] font-bold text-brand-offwhite uppercase tracking-wider transition cursor-pointer"
+            >
+              <HelpCircle className="w-3.5 h-3.5 text-brand-accent" />
+              Guide & Features
+            </button>
+            <button
+              onClick={onQuickShare}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-brand-accent)] hover:bg-yellow-300 text-brand-primary text-[10px] font-bold uppercase tracking-wider transition cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Generate & Export <Share2 className="w-3 h-3 ml-1" />
+            </button>
+          </div>
+        </div>
       </div>
     </header>
   );
 };
-

@@ -94,7 +94,31 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
       const data = await res.json();
       const shareUrl = `${window.location.origin}/share/${data.id}`;
       
-      await navigator.clipboard.writeText(shareUrl);
+      // Robust clipboard copy that handles iOS/Safari async restrictions
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(shareUrl);
+        } else {
+          throw new Error("Clipboard API not available");
+        }
+      } catch (clipErr) {
+        // Fallback for older browsers or strict async clipboard policies
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+        } catch (fallbackErr) {
+          console.error("Fallback copy failed", fallbackErr);
+        }
+        document.body.removeChild(textArea);
+      }
+
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
 
