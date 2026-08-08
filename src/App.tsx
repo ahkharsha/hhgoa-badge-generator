@@ -249,7 +249,6 @@ export default function App() {
             isGeneratingAi={isGeneratingAi}
           />
         </div>
-        </div>
       </main>
 
       {/* Modals */}
