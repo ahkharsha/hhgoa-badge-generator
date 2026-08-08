@@ -89,6 +89,12 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   const processFile = async (file: File) => {
     setIsProcessing(true);
     try {
+      if (!file.type.startsWith("image/")) {
+        alert("Invalid file type! Please upload a valid image (JPEG, PNG, WEBP, etc).");
+        setIsProcessing(false);
+        return;
+      }
+      
       let processableFile: File | Blob = file;
       
       // Convert HEIC to JPEG if needed

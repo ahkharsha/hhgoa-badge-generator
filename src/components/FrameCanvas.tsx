@@ -255,13 +255,14 @@ async function drawPfpFormat(
   // Text inside banner
   ctx.shadowBlur = 0;
   ctx.fillStyle = "#FFFFFF";
+ctx.fillStyle = "#FFFFFF";
   ctx.font = "800 36px 'Imbue', serif";
   ctx.textAlign = "center";
   ctx.fillText((badgeData.name || "GOA BUILDER").toUpperCase(), cx, bannerY + 50);
 
   ctx.fillStyle = theme.accent;
   ctx.font = "700 22px 'Victor Mono', monospace";
-  ctx.fillText(badgeData.builderTitle || "2:47 AM BUILDER", cx, bannerY + 86);
+  ctx.fillText(truncateText(ctx, badgeData.builderTitle || "2:47 AM BUILDER", 480), cx, bannerY + 86);
 
   ctx.fillStyle = "#94A3B8";
   ctx.font = "600 18px 'Imbue', serif";
@@ -443,7 +444,7 @@ async function drawBadgeFormat(
 
   ctx.fillStyle = "#FFFFFF";
   ctx.font = "800 26px 'Imbue', serif";
-  ctx.fillText(badgeData.builderTitle || "Autonomous Agent Alchemist", margin + 65, titleY + 68);
+  ctx.fillText(truncateText(ctx, badgeData.builderTitle || "Autonomous Agent Alchemist", 420), margin + 65, titleY + 68);
   ctx.restore();
 
   // Motto Quote
@@ -451,7 +452,7 @@ async function drawBadgeFormat(
   ctx.save();
   ctx.fillStyle = "#CBD5E1";
   ctx.font = "italic 20px 'Imbue', serif";
-  ctx.fillText(`"${badgeData.motto || "Building at 2:47 AM in Goa."}"`, margin + 40, mottoY);
+  ctx.fillText(`"${truncateText(ctx, badgeData.motto || "Building at 2:47 AM in Goa.", 440)}"`, margin + 40, mottoY);
   ctx.restore();
 
   // Stats Progress Bars
@@ -641,7 +642,7 @@ async function drawHeaderFormat(
   
   ctx.fillStyle = theme.accent;
   ctx.font = "700 28px 'Victor Mono', monospace";
-  ctx.fillText(badgeData.builderTitle || "AI Agent Summoner", margin, height / 2 + 60);
+  ctx.fillText(truncateText(ctx, badgeData.builderTitle || "AI Agent Summoner", width - 400), margin, height / 2 + 60);
 
   // Stats blocks on right side
   if (badgeData.showStats && badgeData.stats?.length) {

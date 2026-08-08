@@ -50,6 +50,10 @@ export default function App() {
     try {
       setIsGeneratingAi(true);
       playSound("generate");
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
       const res = await fetch("/api/generate-title", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +62,9 @@ export default function App() {
           role: badgeData.role,
           stack: badgeData.stack,
         }),
+        signal: controller.signal
       });
+      clearTimeout(timeoutId);
 
       const data = await res.json();
       if (data) {
@@ -88,7 +94,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-brand-primary)] text-[var(--color-brand-offwhite)] flex flex-col font-mono selection:bg-[var(--color-brand-accent)] selection:text-brand-primary p-4 lg:p-8 overflow-x-hidden">
+    <div className="min-h-screen bg-[var(--color-brand-primary)] text-[var(--color-brand-offwhite)] flex flex-col font-mono selection:bg-[var(--color-brand-accent)] selection:text-brand-primary p-4 lg:p-8 overflow-x-hidden max-w-[100vw]">
       {/* Top Header Navigation */}
       <Header
         onOpenHowTo={() => setIsHowToOpen(true)}

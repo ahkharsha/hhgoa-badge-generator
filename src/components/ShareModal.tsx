@@ -23,9 +23,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Pre-filled Tweet Text with hashtag #FrameInGoa
+  // Pre-filled Tweet Text with hashtag #FrameInGoa (truncated title to avoid URI limits)
+  const safeTitle = (badgeData.builderTitle || "AI Builder").substring(0, 100) + ((badgeData.builderTitle || "").length > 100 ? "..." : "");
   const defaultTweetText = `Hyped for HH Goa 2026! 🌴⚡
-Just generated my Builder Pass: "${badgeData.builderTitle || "AI Builder"}"
+Just generated my Builder Pass: "${safeTitle}"
 
 Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
 
