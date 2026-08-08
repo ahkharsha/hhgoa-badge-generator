@@ -24,6 +24,7 @@ async function startServer() {
   // Initialize PostgreSQL Pool
   const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
   });
 
   if (process.env.DATABASE_URL) {
@@ -310,13 +311,13 @@ Return a JSON object with:
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`HH Goa 2026 Badge App running on http://localhost:${PORT}`);
     
-    // Internal CRON job to keep Render active (pings every 14 minutes)
+    // Internal CRON job to keep Render active (pings every 5 minutes)
     if (process.env.NODE_ENV === "production") {
       setInterval(() => {
         const targetUrl = process.env.RENDER_EXTERNAL_URL || "https://hhgoa-badge-generator.onrender.com";
         console.log(`[Keep-Alive Cron] Pinging ${targetUrl} to prevent sleep...`);
         fetch(targetUrl).catch(err => console.error("Keep-Alive ping failed:", err.message));
-      }, 14 * 60 * 1000);
+      }, 5 * 60 * 1000);
     }
   });
 }

@@ -148,8 +148,8 @@ export default function App() {
             />
           </div>
 
-          {/* Right Column: Canvas Preview (Sticky on desktop) */}
-          <div className="space-y-6 lg:sticky lg:top-8 order-1 lg:order-2 flex flex-col items-center">
+          {/* Right Column: Canvas Preview (Sticky and Centered on desktop) */}
+          <div className="space-y-6 lg:sticky lg:top-8 lg:h-[calc(100vh-6rem)] order-1 lg:order-2 flex flex-col justify-center items-center w-full">
             {/* Real-time HTML5 Canvas with 3D Holographic Tilt */}
             <div 
               className="relative w-full transition-transform duration-200 ease-out perspective-1000"

@@ -7,7 +7,7 @@ export const SAMPLE_AVATAR_3 = "https://images.unsplash.com/photo-1542831371-29b
 export const DEFAULT_BADGE_DATA: BadgeData = {
   format: "badge",
   theme: "sunset",
-  name: "Aarav Sharma",
+  name: "Jane Doe",
   role: "AI & Web3 Full-Stack Developer",
   stack: "TypeScript • Solana • Gemini • Python",
   builderTitle: "Autonomous Agent Alchemist & Beach Hacker",
@@ -24,7 +24,7 @@ export const DEFAULT_BADGE_DATA: BadgeData = {
   teammates: [
     {
       id: "1",
-      name: "Aarav Sharma",
+      name: "Jane Doe",
       role: "AI Lead",
       stack: "Gemini • Python • LangChain",
       photo: {
@@ -40,7 +40,7 @@ export const DEFAULT_BADGE_DATA: BadgeData = {
     },
     {
       id: "2",
-      name: "Rohan Varma",
+      name: "John Smith",
       role: "Protocol Eng",
       stack: "Rust • Solana • Anchor",
       photo: {
