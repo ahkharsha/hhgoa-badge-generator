@@ -191,16 +191,25 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
         )}
       </div>
 
-      {!photo.url && (
-        <div className="flex gap-2">
-           <button onClick={() => {
-              onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80", zoom: 1.5, offsetY: 15 });
-           }} className="text-[10px] uppercase font-mono tracking-widest border border-brand-accent/50 text-brand-accent px-3 py-1 hover:bg-brand-accent hover:text-brand-primary transition rounded">Demo Photo 1</button>
-           <button onClick={() => {
-              onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80", zoom: 1.2, offsetY: 5 });
-           }} className="text-[10px] uppercase font-mono tracking-widest border border-brand-accent/50 text-brand-accent px-3 py-1 hover:bg-brand-accent hover:text-brand-primary transition rounded">Demo Photo 2</button>
+      {!photo.url &&          <div className="flex gap-2 w-full mt-2">
+            <button
+              onClick={() =>
+                onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80", zoom: 1.1, offsetY: 0 })
+              }
+              className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
+            >
+              Sample 1
+            </button>
+            <button
+              onClick={() =>
+                onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80", zoom: 1.1, offsetY: 0 })
+              }
+              className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
+            >
+              Sample 2
+            </button>
         </div>
-      )}
+      }
 
       {/* Position & Zoom Controls */}
       {photo.url && (
