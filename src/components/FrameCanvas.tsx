@@ -916,7 +916,8 @@ async function drawCanvasQrCode(
   roundRect(ctx, x, y, size, size, 12, true, false);
 
   try {
-    const url = badgeData.xHandle ? `https://x.com/${badgeData.xHandle}` : window.location.origin;
+    const cleanHandle = (badgeData.xHandle || "").trim().replace(/^@/, "");
+    const url = cleanHandle ? `https://x.com/${cleanHandle}` : "https://x.com/HHGoa2026";
     const qrDataUrl = await QRCode.toDataURL(url, {
       margin: 1,
       color: {

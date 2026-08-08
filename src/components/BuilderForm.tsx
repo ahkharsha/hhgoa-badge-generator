@@ -117,7 +117,7 @@ export const BuilderForm: React.FC<BuilderFormProps> = ({
 
           <div>
             <label className="block text-[10px] sm:text-xs uppercase tracking-[0.2em] text-brand-accent mb-2 font-bold flex items-center gap-2">
-              X (Twitter) Handle <span className="bg-brand-accent text-brand-primary px-1.5 py-0.5 rounded text-[8px]">IRL QR CODE</span>
+              X Handle (Optional) <span className="bg-brand-accent text-brand-primary px-1.5 py-0.5 rounded text-[8px]">IRL QR CODE</span>
             </label>
             <div className="relative">
               <span className="absolute left-0 top-1/2 -translate-y-1/2 text-brand-accent/50 text-xl font-bold">@</span>
