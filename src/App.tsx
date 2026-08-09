@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Header } from "./components/Header";
 import { FrameCanvas } from "./components/FrameCanvas";
 import { PhotoUploader } from "./components/PhotoUploader";
