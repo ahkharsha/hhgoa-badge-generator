@@ -131,11 +131,11 @@ async function drawBackground(
   ctx.fillRect(0, 0, width, height);
 
   try {
-    let bgSrc = "/assets/images/ai_pfp_bg.png";
-    if (badgeData.format === "badge") bgSrc = "/assets/images/ai_badge_bg.png";
-    if (badgeData.format === "squad") bgSrc = "/assets/images/ai_squad_bg.png";
-    if (badgeData.format === "header") bgSrc = "/assets/images/ai_header_bg.png";
-    if (badgeData.format === "story") bgSrc = "/assets/images/ai_story_bg.png";
+    let bgSrc = "/assets/images/pfp_bg.png";
+    if (badgeData.format === "badge") bgSrc = "/assets/images/badge_bg.png";
+    if (badgeData.format === "squad") bgSrc = "/assets/images/squad_bg.png";
+    if (badgeData.format === "header") bgSrc = "/assets/images/squad_bg.png"; // Fallback to squad_bg
+    if (badgeData.format === "story") bgSrc = "/assets/images/badge_bg.png";  // Fallback to badge_bg
 
     const bgImg = await loadImageFromUrl(bgSrc);
     ctx.save();
@@ -155,6 +155,20 @@ async function drawBackground(
     }
     // Center it
     ctx.drawImage(bgImg, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+    
+    // Dynamic Theme Tinting
+    // This makes the background magically adapt to the selected colorway (Solana vs AI Agent, etc)
+    ctx.globalCompositeOperation = "color";
+    ctx.fillStyle = theme.primary; // The theme's primary color shifts the hues!
+    ctx.globalAlpha = 0.5; // 50% opacity to preserve some original vibrancy while shifting the tone
+    ctx.fillRect(0, 0, width, height);
+
+    // Add a slight darkening overlay so white text always pops on bright themes
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "#000000";
+    ctx.globalAlpha = 0.2;
+    ctx.fillRect(0, 0, width, height);
+
     ctx.restore();
   } catch (e) {
     console.log("Failed to load background image", e);
