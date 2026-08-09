@@ -206,7 +206,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       {!photo.url &&          <div className="flex gap-2 w-full mt-2">
             <button
               onClick={() =>
-                onPhotoChange({ ...photo, url: "https://i.pravatar.cc/300?img=11", zoom: 1.1, offsetY: 0 })
+                onPhotoChange({ ...photo, url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 24 24' fill='%231E293B' stroke='%23475569' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' fill='%230F172A' stroke='none'/%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E", zoom: 1.1, offsetY: 0 })
               }
               className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
             >
@@ -214,7 +214,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             </button>
             <button
               onClick={() =>
-                onPhotoChange({ ...photo, url: "https://i.pravatar.cc/300?img=33", zoom: 1.1, offsetY: 0 })
+                onPhotoChange({ ...photo, url: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 24 24' fill='%231E293B' stroke='%23475569' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='24' height='24' fill='%230F172A' stroke='none'/%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E", zoom: 1.1, offsetY: 0 })
               }
               className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
             >
