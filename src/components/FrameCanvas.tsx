@@ -134,8 +134,8 @@ async function drawBackground(
   try {
     const cyberImg = await loadImageFromUrl("/assets/images/cyber-bg.png");
     ctx.save();
-    ctx.globalCompositeOperation = "overlay";
-    ctx.globalAlpha = 0.4; // Subtle blend so it doesn't overpower the text
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = 0.7; // Brightened so it pops
     
     // Scale and crop to fit exactly covering the canvas
     const imgAspect = cyberImg.width / cyberImg.height;
@@ -466,6 +466,7 @@ async function drawBadgeFormat(
   ctx.lineWidth = 2;
   roundRect(ctx, margin + 40, titleY, cardW - 80, 110, 20, false, true);
 
+  ctx.textAlign = "left"; // FIX: Ensure text alignment doesn't leak from Stack tags or VIP Archetype!
   ctx.fillStyle = theme.accent;
   ctx.font = "800 16px 'Victor Mono', monospace";
   const rarityLevel = badgeData.rarity || "EPIC";
@@ -473,11 +474,12 @@ async function drawBadgeFormat(
   if (rarityLevel === "LEGENDARY") rarityColor = "#FBBF24";
   if (rarityLevel === "MYTHIC") rarityColor = "#A855F7";
   ctx.fillStyle = rarityColor;
-  ctx.fillText(`✦ ${rarityLevel} BUILDER CLASS ✦`, margin + 65, titleY + 32);
+  ctx.fillText(`✦ ${rarityLevel} BUILDER CLASS ✦`, margin + 65, titleY + 40);
 
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 26px 'Imbue', serif";
-  ctx.fillText(truncateText(ctx, badgeData.builderTitle || "Autonomous Agent Alchemist", 420), margin + 65, titleY + 68);
+  ctx.font = "800 28px 'Imbue', serif";
+  // FIX: Properly truncate based on the actual bounding box width (cardW - 80 - 25 padding * 2 = cardW - 130)
+  ctx.fillText(truncateText(ctx, badgeData.builderTitle || "Autonomous Agent Alchemist", cardW - 130), margin + 65, titleY + 80);
   ctx.restore();
 
   // Motto Quote
@@ -519,7 +521,7 @@ async function drawBadgeFormat(
 
   // Draw Access Granted Block to fill vertical space
   ctx.save();
-  const accessY = lastY + 40;
+  const accessY = lastY + 30; // Closer spacing
   ctx.fillStyle = hexToRgba(theme.primary, 0.1);
   roundRect(ctx, margin + 40, accessY, cardW - 80, 50, 8, true, false);
   ctx.fillStyle = theme.primary;

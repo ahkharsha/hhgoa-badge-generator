@@ -41,6 +41,18 @@ export default function App() {
   // Pro Mode Toggle
   const [isProMode, setIsProMode] = useState<boolean>(false);
 
+  // Keyboard shortcut to toggle pro mode (Ctrl+P)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        setIsProMode(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Canvas Ready callback
   const handleCanvasReady = useCallback((dataUrl: string) => {
     setCanvasDataUrl(dataUrl);
@@ -112,32 +124,7 @@ export default function App() {
         {/* Main Grid: Left Form Controls vs Right Sticky Canvas Preview */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Left Column: Photo Upload & Builder Configuration Steps */}
-          <div className="space-y-8">
-            {/* Pro Mode Header Toggle */}
-            <div className="flex items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-brand-accent/20 shadow-lg">
-              <div>
-                <h2 className="text-brand-offwhite font-bold tracking-tight text-sm flex items-center gap-2">
-                  <Flame className={`w-4 h-4 transition-colors ${isProMode ? "text-brand-accent drop-shadow-[0_0_5px_rgba(254,225,1,1)]" : "text-slate-500"}`} />
-                  PRO MODE
-                </h2>
-                <p className="text-[9px] font-mono text-slate-400 mt-0.5 tracking-widest uppercase">
-                  {isProMode ? "Advanced Hacker Tools Enabled" : "Basic Fast ID Generator"}
-                </p>
-              </div>
-              
-              <button 
-                onClick={() => setIsProMode(!isProMode)}
-                className={`relative w-14 h-7 rounded-full transition-colors duration-300 ease-in-out cursor-pointer ${
-                  isProMode ? "bg-brand-accent shadow-[0_0_15px_rgba(254,225,1,0.4)]" : "bg-slate-700"
-                }`}
-              >
-                <div 
-                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ease-in-out ${
-                    isProMode ? "translate-x-7 bg-brand-primary" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
+          <div className="space-y-12">
 
             {badgeData.format === "squad" ? (
               <div className="space-y-6">
@@ -310,6 +297,31 @@ export default function App() {
         isOpen={isHowToOpen}
         onClose={() => setIsHowToOpen(false)}
       />
+
+      {/* Pro Mode Floating Button */}
+      <div className="fixed bottom-6 left-6 z-50">
+        <div className="relative group">
+          <div className={`absolute -inset-0.5 rounded-full blur opacity-30 transition duration-500 group-hover:opacity-100 ${isProMode ? "bg-brand-accent opacity-70" : "bg-brand-primary"}`}></div>
+          <button
+            onClick={() => setIsProMode(!isProMode)}
+            className="relative flex items-center gap-3 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 hover:border-brand-accent/50 px-5 py-3 rounded-full shadow-2xl transition-all"
+            title="Toggle Pro Mode (Ctrl+P)"
+          >
+            <Flame className={`w-5 h-5 ${isProMode ? "text-brand-accent" : "text-slate-400"}`} />
+            <div className="flex flex-col items-start hidden sm:flex">
+              <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+                {isProMode ? "Pro Mode On" : "Pro Mode Off"}
+              </span>
+              <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5 leading-none">
+                Advanced Tools
+              </span>
+            </div>
+            <div className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full transition-colors duration-300 ${isProMode ? "bg-brand-accent" : "bg-slate-700"}`}>
+              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-300 ${isProMode ? "translate-x-4.5" : "translate-x-1"}`} />
+            </div>
+          </button>
+        </div>
+      </div>
 
       {/* Footer */}
       <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center text-brand-offwhite/60 font-mono text-[10px] uppercase tracking-widest gap-6">
