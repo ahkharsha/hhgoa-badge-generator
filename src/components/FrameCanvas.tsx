@@ -129,11 +129,36 @@ async function drawBackground(
   // Base dark fill
   ctx.fillStyle = theme.bgGradient[2];
   ctx.fillRect(0, 0, width, height);
+
+  // Premium AI Cyberpunk Background Layer
+  try {
+    const cyberImg = await loadImageFromUrl("/assets/images/cyber-bg.png");
+    ctx.save();
+    ctx.globalCompositeOperation = "overlay";
+    ctx.globalAlpha = 0.4; // Subtle blend so it doesn't overpower the text
+    
+    // Scale and crop to fit exactly covering the canvas
+    const imgAspect = cyberImg.width / cyberImg.height;
+    const canvasAspect = width / height;
+    let drawW = width;
+    let drawH = height;
+    if (canvasAspect > imgAspect) {
+      drawW = width;
+      drawH = width / imgAspect;
+    } else {
+      drawH = height;
+      drawW = height * imgAspect;
+    }
+    ctx.drawImage(cyberImg, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+    ctx.restore();
+  } catch (e) {
+    // If the image fails to load, gracefully degrade to normal background
+    console.log("Failed to load cyber bg", e);
+  }
   
   if (theme.name === "Sunset" || theme.name === "Gold") {
     try {
       const sunriseImg = await loadImageFromUrl("/assets/images/Sun%20rise.png");
-      // Draw sunrise image at the bottom, scaled to width
       const imgAspect = sunriseImg.width / sunriseImg.height;
       const drawHeight = width / imgAspect;
       ctx.globalAlpha = 0.8;
@@ -153,15 +178,15 @@ async function drawBackground(
     height / 2,
     width * 0.85
   );
-  radial.addColorStop(0, hexToRgba(theme.primary, 0.35));
-  radial.addColorStop(0.5, hexToRgba(theme.secondary, 0.2));
+  radial.addColorStop(0, hexToRgba(theme.primary, 0.45));
+  radial.addColorStop(0.5, hexToRgba(theme.secondary, 0.25));
   radial.addColorStop(1, "transparent");
   ctx.fillStyle = radial;
   ctx.fillRect(0, 0, width, height);
 
   // Cyber grid lines
-  ctx.strokeStyle = hexToRgba(theme.primary, 0.08);
-  ctx.lineWidth = 2;
+  ctx.strokeStyle = hexToRgba(theme.primary, 0.15);
+  ctx.lineWidth = 1.5;
   const gridSize = 40;
 
   ctx.beginPath();
@@ -175,9 +200,17 @@ async function drawBackground(
   }
   ctx.stroke();
 
+  // Procedural Premium Typography (Hex Data)
+  ctx.fillStyle = hexToRgba(theme.accent, 0.5);
+  ctx.font = "500 10px 'Victor Mono', monospace";
+  ctx.textAlign = "left";
+  ctx.fillText(`SYS.INIT // ${Math.random().toString(16).substr(2, 8).toUpperCase()}`, 15, 20);
+  ctx.textAlign = "right";
+  ctx.fillText(`SEQ: ${Date.now().toString().slice(-6)}`, width - 15, 20);
+
   // Subtle Beach Wave Curves at bottom
   ctx.save();
-  ctx.fillStyle = hexToRgba(theme.secondary, 0.08);
+  ctx.fillStyle = hexToRgba(theme.secondary, 0.15);
   ctx.beginPath();
   ctx.moveTo(0, height);
   ctx.quadraticCurveTo(width * 0.25, height - 80, width * 0.5, height - 40);

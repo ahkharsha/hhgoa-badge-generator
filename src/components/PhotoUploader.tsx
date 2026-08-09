@@ -154,14 +154,14 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${photo.url ? "grid grid-cols-1 sm:grid-cols-[1fr,1.5fr] gap-6 space-y-0" : ""}`}>
       {/* Drag & Drop Upload Zone */}
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed border-brand-accent/30 h-48 flex flex-col items-center justify-center bg-brand-primary/90 hover:bg-brand-primary/80 transition-all cursor-pointer rounded-lg relative ${
-          photo.url ? "border-brand-accent" : ""
+        className={`border-2 border-dashed border-brand-accent/30 flex flex-col items-center justify-center bg-brand-primary/90 hover:bg-brand-primary/80 transition-all cursor-pointer rounded-lg relative ${
+          photo.url ? "border-brand-accent h-auto py-6" : "h-48"
         }`}
       >
         <input
@@ -225,7 +225,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
       {/* Position & Zoom Controls */}
       {photo.url && (
-        <div className="space-y-4 pt-4 border-t border-brand-accent/30">
+        <div className="flex flex-col justify-center space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">
               Fine-Tune Geometry
@@ -326,7 +326,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
           
           <div className="flex justify-end pt-2">
             <button
-              onClick={() => onPhotoChange({ ...photo, url: "" })}
+              onClick={(e) => { e.stopPropagation(); onPhotoChange({ ...photo, url: "" }); }}
               className="text-[10px] text-red-400 hover:text-red-300 uppercase font-mono tracking-widest transition cursor-pointer border-b border-red-400/30 hover:border-red-300 pb-0.5"
             >
               [ Remove Photo ]
