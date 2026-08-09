@@ -131,12 +131,18 @@ async function drawBackground(
   ctx.fillRect(0, 0, width, height);
 
   try {
-    const sunriseImg = await loadImageFromUrl("/assets/images/Sun%20rise.png");
+    let bgSrc = "/assets/images/ai_pfp_bg.png";
+    if (badgeData.format === "badge") bgSrc = "/assets/images/ai_badge_bg.png";
+    if (badgeData.format === "squad") bgSrc = "/assets/images/ai_squad_bg.png";
+    if (badgeData.format === "header") bgSrc = "/assets/images/ai_header_bg.png";
+    if (badgeData.format === "story") bgSrc = "/assets/images/ai_story_bg.png";
+
+    const bgImg = await loadImageFromUrl(bgSrc);
     ctx.save();
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = 1.0;
     
-    const imgAspect = sunriseImg.width / sunriseImg.height;
+    const imgAspect = bgImg.width / bgImg.height;
     const canvasAspect = width / height;
     let drawW = width;
     let drawH = height;
@@ -148,10 +154,10 @@ async function drawBackground(
       drawW = height * imgAspect;
     }
     // Center it
-    ctx.drawImage(sunriseImg, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+    ctx.drawImage(bgImg, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
     ctx.restore();
   } catch (e) {
-    console.log("Failed to load sunrise bg", e);
+    console.log("Failed to load background image", e);
   }
 }
 
@@ -271,53 +277,15 @@ async function drawBadgeFormat(
   const cardH = height - margin * 2 - 20;
   const cardY = margin + 20;
 
-  // Card Body Background (Cream)
-  ctx.fillStyle = "#FDF7ED";
-  roundRect(ctx, margin, cardY, cardW, cardH, 32, true, false);
-
-  // Outer Border (Dark Green)
-  ctx.strokeStyle = "#015B28";
-  ctx.lineWidth = 6;
+  // Sleek glassmorphism border to frame the AI art
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+  ctx.lineWidth = 2;
   roundRect(ctx, margin, cardY, cardW, cardH, 32, false, true);
-
-  // Inner Border (Dark Green)
-  ctx.strokeStyle = "#015B28";
-  ctx.lineWidth = 3;
+  
+  ctx.strokeStyle = "rgba(255, 213, 0, 0.3)";
+  ctx.lineWidth = 1;
   roundRect(ctx, margin + 12, cardY + 12, cardW - 24, cardH - 24, 20, false, true);
-
-  // Official Sunrise Graphic
-  try {
-    const sunriseImg = new Image();
-    sunriseImg.crossOrigin = "anonymous";
-    sunriseImg.src = "/assets/images/Sun%20rise.png";
-    await new Promise((resolve, reject) => {
-      sunriseImg.onload = resolve;
-      sunriseImg.onerror = reject;
-    });
-
-    ctx.save();
-    // Create clipping path for the sunrise illustration inside the inner border
-    if (typeof ctx.roundRect === "function") {
-      ctx.beginPath();
-      ctx.roundRect(margin + 12, cardY + 12, cardW - 24, cardH - 24, 20);
-      ctx.clip();
-    }
-    
-    // Scale image
-    const imgRatio = sunriseImg.width / sunriseImg.height;
-    const drawW = cardW - 24;
-    const drawH = drawW / imgRatio;
-    
-    // Draw aligned to bottom, offset slightly up so sky covers the top
-    ctx.globalAlpha = 1.0;
-    ctx.globalCompositeOperation = "source-over";
-    ctx.drawImage(sunriseImg, margin + 12, cardY + cardH - 12 - drawH + 180, drawW, drawH);
-    ctx.restore();
-  } catch (e) {
-    console.error("Failed to load sunrise overlay", e);
-  }
-
-  // No Gradient Border needed anymore
+  ctx.restore();
 
   // Hacker House Typography Header
   ctx.save();
@@ -435,16 +403,30 @@ async function drawBadgeFormat(
     ctx.restore();
   }
   
-  // Hashtag
+  // Hashtag and Studio Logo
   ctx.save();
+  try {
+    const studioImg = new Image();
+    studioImg.crossOrigin = "anonymous";
+    studioImg.src = "/assets/images/2-47.svg";
+    await new Promise((resolve, reject) => {
+      studioImg.onload = resolve;
+      studioImg.onerror = reject;
+    });
+    // Draw above hashtag
+    ctx.drawImage(studioImg, margin + cardW - 140, cardY + cardH - 120, 100, 30);
+  } catch (e) {
+    console.error("Failed to load 2-47 logo", e);
+  }
+
   ctx.fillStyle = "#EA2B58";
   ctx.font = "800 32px 'Imbue', serif";
   ctx.textAlign = "right";
-  ctx.fillText("#FrameInGoa", margin + cardW - 40, cardY + cardH - 80);
+  ctx.fillText("#FrameInGoa", margin + cardW - 40, cardY + cardH - 50);
   
   ctx.fillStyle = "#015B28";
   ctx.font = "600 16px 'Victor Mono', monospace";
-  ctx.fillText("OCT 28-31, 2026", margin + cardW - 40, cardY + cardH - 50);
+  ctx.fillText("OCT 28-31, 2026", margin + cardW - 40, cardY + cardH - 25);
   ctx.restore();
 }
 
@@ -461,49 +443,16 @@ async function drawSquadFormat(
   const cardH = height - margin * 2;
 
   ctx.save();
-  // Card Body Background (Cream)
-  ctx.fillStyle = "#FDF7ED";
-  roundRect(ctx, margin, margin, cardW, cardH, 28, true, false);
 
-  // Outer Border (Dark Green)
-  ctx.strokeStyle = "#015B28";
-  ctx.lineWidth = 6;
+  // Sleek glassmorphism border to frame the AI art
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+  ctx.lineWidth = 2;
   roundRect(ctx, margin, margin, cardW, cardH, 28, false, true);
   
-  // Inner Border (Dark Green)
-  ctx.strokeStyle = "#015B28";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "rgba(255, 213, 0, 0.3)";
+  ctx.lineWidth = 1;
   roundRect(ctx, margin + 12, margin + 12, cardW - 24, cardH - 24, 20, false, true);
-
-  // Official Hackers Graphic
-  try {
-    const hackersImg = new Image();
-    hackersImg.crossOrigin = "anonymous";
-    hackersImg.src = "/assets/images/hackers.png";
-    await new Promise((resolve, reject) => {
-      hackersImg.onload = resolve;
-      hackersImg.onerror = reject;
-    });
-    
-    ctx.save();
-    if (typeof ctx.roundRect === "function") {
-      ctx.beginPath();
-      ctx.roundRect(margin + 12, margin + 12, cardW - 24, cardH - 24, 20);
-      ctx.clip();
-    }
-    
-    const imgRatio = hackersImg.width / hackersImg.height;
-    const drawW = cardW - 24;
-    const drawH = drawW / imgRatio;
-    
-    ctx.globalAlpha = 1.0;
-    ctx.globalCompositeOperation = "source-over";
-    // Draw aligned to bottom
-    ctx.drawImage(hackersImg, margin + 12, margin + cardH - 12 - drawH, drawW, drawH);
-    ctx.restore();
-  } catch (e) {
-    console.error("Failed to load hackers overlay for squad", e);
-  }
+  ctx.restore();
 
   // Header Banner
   ctx.fillStyle = theme.primary;
@@ -571,7 +520,20 @@ async function drawSquadFormat(
     ctx.restore();
   }
 
-  // Footer Watermark
+  // Footer Watermark and Logo
+  try {
+    const studioImg = new Image();
+    studioImg.crossOrigin = "anonymous";
+    studioImg.src = "/assets/images/2-47.svg";
+    await new Promise((resolve, reject) => {
+      studioImg.onload = resolve;
+      studioImg.onerror = reject;
+    });
+    ctx.drawImage(studioImg, margin + 40, height - margin - 60, 80, 24);
+  } catch (e) {
+    console.error("Failed to load 2-47 logo", e);
+  }
+
   ctx.fillStyle = "#FFFFFF";
   ctx.font = "800 26px 'Imbue', serif";
   ctx.fillText("#FrameInGoa", margin + 40, height - margin - 25);
