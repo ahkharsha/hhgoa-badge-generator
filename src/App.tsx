@@ -244,10 +244,17 @@ export default function App() {
                   try {
                     const link = document.createElement("a");
                     link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}.png`;
-                    link.href = canvasDataUrl;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    fetch(canvasDataUrl)
+                      .then(res => res.blob())
+                      .then(blob => {
+                        const url = URL.createObjectURL(blob);
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        playSound("success");
+                      });
                   } catch (e) {
                     console.error("Export failed:", e);
                     alert("Failed to export image. Please try again.");

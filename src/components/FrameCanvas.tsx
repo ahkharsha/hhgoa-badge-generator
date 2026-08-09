@@ -130,12 +130,12 @@ async function drawBackground(
   ctx.fillStyle = theme.bgGradient[2];
   ctx.fillRect(0, 0, width, height);
 
-  // Premium AI Cyberpunk Background Layer
+  // Premium Banger Tropical Background Layer
   try {
-    const cyberImg = await loadImageFromUrl("/assets/images/cyber-bg.png");
+    const cyberImg = await loadImageFromUrl("/assets/images/banger-bg.png");
     ctx.save();
-    ctx.globalCompositeOperation = "screen";
-    ctx.globalAlpha = 0.7; // Brightened so it pops
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 0.85; // Slightly faded to let grid and content pop
     
     // Scale and crop to fit exactly covering the canvas
     const imgAspect = cyberImg.width / cyberImg.height;
@@ -341,11 +341,11 @@ async function drawBadgeFormat(
   ctx.fillStyle = hexToRgba(theme.cardBg, 0.95);
   roundRect(ctx, margin, cardY, cardW, cardH, 32, true, false);
 
-  // Designer Overlay (hackers.png)
+  // Designer Banger Overlay (Tropical Beach Vibe)
   try {
     const designerImg = new Image();
     designerImg.crossOrigin = "anonymous";
-    designerImg.src = "/assets/images/hackers.png";
+    designerImg.src = "/assets/images/banger-bg.png";
     await new Promise((resolve, reject) => {
       designerImg.onload = resolve;
       designerImg.onerror = reject;
@@ -357,16 +357,37 @@ async function drawBadgeFormat(
       ctx.roundRect(margin, cardY, cardW, cardH, 32);
       ctx.clip();
     }
-    ctx.globalCompositeOperation = "screen";
-    ctx.globalAlpha = 0.15;
     
-    // Draw it scaled to fit the card width
+    // Draw it scaled to cover the card perfectly
     const imgRatio = designerImg.width / designerImg.height;
-    const drawH = cardW / imgRatio;
-    ctx.drawImage(designerImg, margin, cardY + cardH - drawH, cardW, drawH);
+    const cardRatio = cardW / cardH;
+    let drawW = cardW;
+    let drawH = cardH;
+    let drawX = margin;
+    let drawY = cardY;
+    
+    if (imgRatio > cardRatio) {
+      drawW = cardH * imgRatio;
+      drawX = margin - (drawW - cardW) / 2;
+    } else {
+      drawH = cardW / imgRatio;
+      drawY = cardY - (drawH - cardH) / 2;
+    }
+    
+    ctx.globalAlpha = 1.0;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(designerImg, drawX, drawY, drawW, drawH);
+    
+    // Add a dark vignette/gradient so white text stays readable
+    const vignette = ctx.createLinearGradient(margin, cardY, margin, cardY + cardH);
+    vignette.addColorStop(0, "rgba(10, 10, 15, 0.4)");
+    vignette.addColorStop(0.5, "rgba(10, 10, 15, 0.7)");
+    vignette.addColorStop(1, "rgba(5, 5, 10, 0.95)");
+    ctx.fillStyle = vignette;
+    ctx.fill();
     ctx.restore();
   } catch (e) {
-    console.error("Failed to load designer overlay", e);
+    console.error("Failed to load banger overlay", e);
   }
 
   // Gradient Border
@@ -593,6 +614,55 @@ async function drawSquadFormat(
   ctx.save();
   ctx.fillStyle = hexToRgba(theme.cardBg, 0.95);
   roundRect(ctx, margin, margin, cardW, cardH, 28, true, false);
+
+  // Designer Banger Overlay for Squad Pass
+  try {
+    const designerImg = new Image();
+    designerImg.crossOrigin = "anonymous";
+    designerImg.src = "/assets/images/banger-bg.png";
+    await new Promise((resolve, reject) => {
+      designerImg.onload = resolve;
+      designerImg.onerror = reject;
+    });
+    ctx.save();
+    // Create clipping path for the card body
+    if (typeof ctx.roundRect === "function") {
+      ctx.beginPath();
+      ctx.roundRect(margin, margin, cardW, cardH, 28);
+      ctx.clip();
+    }
+    
+    // Draw it scaled to cover the card perfectly
+    const imgRatio = designerImg.width / designerImg.height;
+    const cardRatio = cardW / cardH;
+    let drawW = cardW;
+    let drawH = cardH;
+    let drawX = margin;
+    let drawY = margin;
+    
+    if (imgRatio > cardRatio) {
+      drawW = cardH * imgRatio;
+      drawX = margin - (drawW - cardW) / 2;
+    } else {
+      drawH = cardW / imgRatio;
+      drawY = margin - (drawH - cardH) / 2;
+    }
+    
+    ctx.globalAlpha = 1.0;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(designerImg, drawX, drawY, drawW, drawH);
+    
+    // Add a vignette so squad pass text stays readable
+    const vignette = ctx.createLinearGradient(margin, margin, margin, margin + cardH);
+    vignette.addColorStop(0, "rgba(10, 10, 15, 0.5)");
+    vignette.addColorStop(0.5, "rgba(10, 10, 15, 0.8)");
+    vignette.addColorStop(1, "rgba(5, 5, 10, 0.95)");
+    ctx.fillStyle = vignette;
+    ctx.fill();
+    ctx.restore();
+  } catch (e) {
+    console.error("Failed to load banger overlay for squad", e);
+  }
 
   ctx.strokeStyle = theme.primary;
   ctx.lineWidth = 4;

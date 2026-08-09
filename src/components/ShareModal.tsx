@@ -38,10 +38,16 @@ Generate your own #FrameInGoa pass in 5 seconds using this generator! 🚀
     try {
       const link = document.createElement("a");
       link.download = `HH-Goa-2026-${(badgeData.name || "Builder").replace(/\s+/g, "-")}-${badgeData.format}.png`;
-      link.href = canvasDataUrl;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      fetch(canvasDataUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        });
 
       // Trigger celebratory confetti
       confetti({
