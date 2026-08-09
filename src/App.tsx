@@ -300,24 +300,24 @@ export default function App() {
 
       {/* Pro Mode Floating Button */}
       <div className="fixed bottom-6 left-6 z-50">
-        <div className="relative group">
-          <div className={`absolute -inset-0.5 rounded-full blur opacity-30 transition duration-500 group-hover:opacity-100 ${isProMode ? "bg-brand-accent opacity-70" : "bg-brand-primary"}`}></div>
+        <div className="relative group cursor-pointer hover:scale-105 transition-transform duration-300">
+          <div className={`absolute -inset-1 rounded-full blur-md opacity-60 transition duration-500 group-hover:opacity-100 group-hover:blur-lg ${isProMode ? "bg-brand-accent shadow-[0_0_20px_var(--color-brand-accent)]" : "bg-brand-primary"}`}></div>
           <button
             onClick={() => setIsProMode(!isProMode)}
-            className="relative flex items-center gap-3 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 hover:border-brand-accent/50 px-5 py-3 rounded-full shadow-2xl transition-all"
+            className={`relative flex items-center gap-3 bg-slate-900/90 backdrop-blur-xl border ${isProMode ? 'border-brand-accent/70' : 'border-slate-600'} hover:border-brand-accent px-6 py-4 rounded-full shadow-2xl transition-all`}
             title="Toggle Pro Mode (Ctrl+P)"
           >
-            <Flame className={`w-5 h-5 ${isProMode ? "text-brand-accent" : "text-slate-400"}`} />
+            <Flame className={`w-6 h-6 ${isProMode ? "text-brand-accent" : "text-slate-400"}`} />
             <div className="flex flex-col items-start hidden sm:flex">
-              <span className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+              <span className={`text-[12px] font-bold uppercase tracking-widest leading-none ${isProMode ? "text-brand-accent" : "text-white"}`}>
                 {isProMode ? "Pro Mode On" : "Pro Mode Off"}
               </span>
-              <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5 leading-none">
+              <span className="text-[9px] text-slate-400 uppercase tracking-widest mt-1 leading-none">
                 Advanced Tools
               </span>
             </div>
-            <div className={`relative inline-flex h-5 w-9 ml-2 items-center rounded-full transition-colors duration-300 ${isProMode ? "bg-brand-accent" : "bg-slate-700"}`}>
-              <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-300 ${isProMode ? "translate-x-4.5" : "translate-x-1"}`} />
+            <div className={`relative inline-flex h-6 w-10 ml-3 items-center rounded-full transition-colors duration-300 ${isProMode ? "bg-brand-accent" : "bg-slate-700"}`}>
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${isProMode ? "translate-x-5" : "translate-x-1"}`} />
             </div>
           </button>
         </div>

@@ -341,6 +341,34 @@ async function drawBadgeFormat(
   ctx.fillStyle = hexToRgba(theme.cardBg, 0.95);
   roundRect(ctx, margin, cardY, cardW, cardH, 32, true, false);
 
+  // Designer Overlay (hackers.png)
+  try {
+    const designerImg = new Image();
+    designerImg.crossOrigin = "anonymous";
+    designerImg.src = "/assets/images/hackers.png";
+    await new Promise((resolve, reject) => {
+      designerImg.onload = resolve;
+      designerImg.onerror = reject;
+    });
+    ctx.save();
+    // Create clipping path for the card body
+    if (typeof ctx.roundRect === "function") {
+      ctx.beginPath();
+      ctx.roundRect(margin, cardY, cardW, cardH, 32);
+      ctx.clip();
+    }
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = 0.15;
+    
+    // Draw it scaled to fit the card width
+    const imgRatio = designerImg.width / designerImg.height;
+    const drawH = cardW / imgRatio;
+    ctx.drawImage(designerImg, margin, cardY + cardH - drawH, cardW, drawH);
+    ctx.restore();
+  } catch (e) {
+    console.error("Failed to load designer overlay", e);
+  }
+
   // Gradient Border
   const cardBorder = ctx.createLinearGradient(margin, cardY, width - margin, cardY + cardH);
   cardBorder.addColorStop(0, theme.primary);
@@ -485,6 +513,7 @@ async function drawBadgeFormat(
   // Motto Quote
   const mottoY = titleY + 150;
   ctx.save();
+  ctx.textAlign = "left"; // FIX: Reset from VIP Archetype
   ctx.fillStyle = "#CBD5E1";
   ctx.font = "italic 24px 'Imbue', serif";
   ctx.fillText(`"${truncateText(ctx, badgeData.motto || "Building at 2:47 AM in Goa.", 440)}"`, margin + 40, mottoY);
@@ -501,6 +530,7 @@ async function drawBadgeFormat(
       const sy = statsY + Math.floor(idx / 2) * 50;
 
       ctx.save();
+      ctx.textAlign = "left"; // FIX: Ensure left alignment for stats text
       ctx.fillStyle = "#94A3B8";
       ctx.font = "700 16px 'Victor Mono', monospace";
       ctx.fillText(`${st.label}: ${st.value}%`, sx, sy + 16);
