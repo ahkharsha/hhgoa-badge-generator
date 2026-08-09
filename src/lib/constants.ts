@@ -1,8 +1,8 @@
 import { BadgeData, ThemeStyle } from "../types";
 
-export const SAMPLE_AVATAR = "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80"; // Cyber/Tech Money/Code theme or person
-export const SAMPLE_AVATAR_2 = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80"; // Abstract tech
-export const SAMPLE_AVATAR_3 = "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80"; // Coding screen
+export const SAMPLE_AVATAR = "https://i.pravatar.cc/300?img=11";
+export const SAMPLE_AVATAR_2 = "https://i.pravatar.cc/300?img=33";
+export const SAMPLE_AVATAR_3 = "https://i.pravatar.cc/300?img=44"; // Coding screen
 
 export const DEFAULT_BADGE_DATA: BadgeData = {
   format: "badge",

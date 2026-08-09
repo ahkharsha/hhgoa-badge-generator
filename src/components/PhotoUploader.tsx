@@ -154,14 +154,14 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
   };
 
   return (
-    <div className={`space-y-4 ${photo.url ? "grid grid-cols-1 sm:grid-cols-[1fr,1.5fr] gap-6 space-y-0" : ""}`}>
+    <div className={`space-y-4 ${photo.url ? "grid grid-cols-1 sm:grid-cols-5 gap-6 space-y-0" : ""}`}>
       {/* Drag & Drop Upload Zone */}
       <div
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
         className={`border-2 border-dashed border-brand-accent/30 flex flex-col items-center justify-center bg-brand-primary/90 hover:bg-brand-primary/80 transition-all cursor-pointer rounded-lg relative ${
-          photo.url ? "border-brand-accent h-auto py-6" : "h-48"
+          photo.url ? "border-brand-accent h-auto py-6 sm:col-span-2" : "h-48"
         }`}
       >
         <input
@@ -206,7 +206,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
       {!photo.url &&          <div className="flex gap-2 w-full mt-2">
             <button
               onClick={() =>
-                onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80", zoom: 1.1, offsetY: 0 })
+                onPhotoChange({ ...photo, url: "https://i.pravatar.cc/300?img=11", zoom: 1.1, offsetY: 0 })
               }
               className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
             >
@@ -214,7 +214,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
             </button>
             <button
               onClick={() =>
-                onPhotoChange({ ...photo, url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80", zoom: 1.1, offsetY: 0 })
+                onPhotoChange({ ...photo, url: "https://i.pravatar.cc/300?img=33", zoom: 1.1, offsetY: 0 })
               }
               className="flex-1 bg-slate-900 border border-slate-700 hover:border-brand-accent hover:bg-slate-800 text-xs text-slate-300 py-1.5 rounded-md transition"
             >
@@ -225,7 +225,7 @@ export const PhotoUploader: React.FC<PhotoUploaderProps> = ({
 
       {/* Position & Zoom Controls */}
       {photo.url && (
-        <div className="flex flex-col justify-center space-y-4">
+        <div className="flex flex-col justify-center space-y-4 sm:col-span-3">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold text-brand-accent uppercase tracking-[0.2em]">
               Fine-Tune Geometry

@@ -416,49 +416,49 @@ async function drawBadgeFormat(
   ctx.restore();
 
   // Info Block (Right side of photo)
-  const infoX = photoX + photoW + 40;
-  const infoY = photoY + 10;
+  const infoX = photoX + photoW + 50;
+  const infoY = photoY + 20;
 
   ctx.save();
   ctx.textAlign = "left";
 
   // Name
   ctx.fillStyle = "#FFFFFF";
-  ctx.font = "800 42px 'Imbue', serif";
+  ctx.font = "800 48px 'Imbue', serif";
   const nameStr = truncateText(ctx, (badgeData.name || "Anonymous").toUpperCase(), 480);
   ctx.fillText(nameStr, infoX, infoY + 40);
 
   // Role
   ctx.fillStyle = theme.primary;
-  ctx.font = "700 22px 'Victor Mono', monospace";
-  ctx.fillText(truncateText(ctx, badgeData.role || "Builder", 480), infoX, infoY + 80);
+  ctx.font = "700 26px 'Victor Mono', monospace";
+  ctx.fillText(truncateText(ctx, badgeData.role || "Builder", 480), infoX, infoY + 90);
 
   // Badge Serial ID
   ctx.fillStyle = "#64748B";
-  ctx.font = "600 18px 'Victor Mono', monospace";
-  ctx.fillText(`ID: ${badgeData.badgeId || "HH26-2470-GOA"}`, infoX, infoY + 115);
+  ctx.font = "600 20px 'Victor Mono', monospace";
+  ctx.fillText(`ID: ${badgeData.badgeId || "HH26-2470-GOA"}`, infoX, infoY + 135);
 
   // Stack Tags
   const stackItems = (badgeData.stack || "AI • Web3 • Full-Stack").split(/•|,|\|/).slice(0, 3);
-  let tagY = infoY + 145;
+  let tagY = infoY + 180;
   stackItems.forEach((item) => {
     const trimmed = item.trim();
     if (!trimmed) return;
     ctx.fillStyle = hexToRgba(theme.primary, 0.15);
-    roundRect(ctx, infoX, tagY, 320, 36, 12, true, false);
+    roundRect(ctx, infoX, tagY, 340, 42, 14, true, false);
     ctx.strokeStyle = hexToRgba(theme.primary, 0.4);
     ctx.lineWidth = 1;
-    roundRect(ctx, infoX, tagY, 320, 36, 12, false, true);
+    roundRect(ctx, infoX, tagY, 340, 42, 14, false, true);
 
     ctx.fillStyle = "#F8FAFC";
-    ctx.font = "700 16px 'Imbue', serif";
-    ctx.fillText(`⚡ ${trimmed}`, infoX + 16, tagY + 24);
-    tagY += 46;
+    ctx.font = "700 18px 'Imbue', serif";
+    ctx.fillText(`⚡ ${trimmed}`, infoX + 20, tagY + 28);
+    tagY += 54;
   });
   ctx.restore();
 
   // Builder Title Banner Section
-  const titleY = photoY + photoH + 35;
+  const titleY = photoY + photoH + 50;
   ctx.save();
   ctx.fillStyle = hexToRgba("#030712", 0.85);
   roundRect(ctx, margin + 40, titleY, cardW - 80, 110, 20, true, false);
@@ -481,38 +481,52 @@ async function drawBadgeFormat(
   ctx.restore();
 
   // Motto Quote
-  const mottoY = titleY + 130;
+  const mottoY = titleY + 150;
   ctx.save();
   ctx.fillStyle = "#CBD5E1";
-  ctx.font = "italic 20px 'Imbue', serif";
+  ctx.font = "italic 24px 'Imbue', serif";
   ctx.fillText(`"${truncateText(ctx, badgeData.motto || "Building at 2:47 AM in Goa.", 440)}"`, margin + 40, mottoY);
   ctx.restore();
 
   // Stats Progress Bars
+  let lastY = mottoY + 10;
   if (badgeData.showStats && badgeData.stats && badgeData.stats.length > 0) {
-    const statsY = mottoY + 35;
+    const statsY = mottoY + 45;
     const statW = (cardW - 80 - 30) / 2;
 
     badgeData.stats.forEach((st, idx) => {
       const sx = margin + 40 + (idx % 2) * (statW + 30);
-      const sy = statsY + Math.floor(idx / 2) * 45;
+      const sy = statsY + Math.floor(idx / 2) * 50;
 
       ctx.save();
       ctx.fillStyle = "#94A3B8";
-      ctx.font = "700 15px 'Victor Mono', monospace";
+      ctx.font = "700 16px 'Victor Mono', monospace";
       ctx.fillText(`${st.label}: ${st.value}%`, sx, sy + 16);
 
       // Track
       ctx.fillStyle = "#1E293B";
-      roundRect(ctx, sx + 130, sy, statW - 130, 20, 10, true, false);
+      roundRect(ctx, sx + 140, sy, statW - 140, 22, 11, true, false);
 
       // Fill
-      const fillW = Math.max(10, ((statW - 130) * st.value) / 100);
+      const fillW = Math.max(10, ((statW - 140) * st.value) / 100);
       ctx.fillStyle = idx % 2 === 0 ? theme.primary : theme.secondary;
-      roundRect(ctx, sx + 130, sy, fillW, 20, 10, true, false);
+      roundRect(ctx, sx + 140, sy, fillW, 22, 11, true, false);
       ctx.restore();
+      
+      lastY = sy + 50;
     });
   }
+
+  // Draw Access Granted Block to fill vertical space
+  ctx.save();
+  const accessY = lastY + 40;
+  ctx.fillStyle = hexToRgba(theme.primary, 0.1);
+  roundRect(ctx, margin + 40, accessY, cardW - 80, 50, 8, true, false);
+  ctx.fillStyle = theme.primary;
+  ctx.font = "800 20px 'Victor Mono', monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("/// ACCESS LEVEL: TIER 1 [GOA VIP] ///", width / 2, accessY + 32);
+  ctx.restore();
 
   // Footer: QR Code + Hashtag Watermark
   const footerY = height - margin - 120;
