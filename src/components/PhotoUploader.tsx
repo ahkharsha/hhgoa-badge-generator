@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Upload, Move, ZoomIn, RotateCw, Sun, RefreshCw, Image as ImageIcon } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import heic2any from "heic2any";
 import { PhotoConfig } from "../types";
 

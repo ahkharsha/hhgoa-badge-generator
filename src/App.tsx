@@ -37,6 +37,9 @@ export default function App() {
   // Modals state
   const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
   const [isHowToOpen, setIsHowToOpen] = useState<boolean>(false);
+  
+  // Pro Mode Toggle
+  const [isProMode, setIsProMode] = useState<boolean>(false);
 
   // Canvas Ready callback
   const handleCanvasReady = useCallback((dataUrl: string) => {
@@ -110,6 +113,32 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Left Column: Photo Upload & Builder Configuration Steps */}
           <div className="space-y-8">
+            {/* Pro Mode Header Toggle */}
+            <div className="flex items-center justify-between bg-slate-900/50 p-4 rounded-xl border border-brand-accent/20 shadow-lg">
+              <div>
+                <h2 className="text-brand-offwhite font-bold tracking-tight text-sm flex items-center gap-2">
+                  <Flame className={`w-4 h-4 transition-colors ${isProMode ? "text-brand-accent drop-shadow-[0_0_5px_rgba(254,225,1,1)]" : "text-slate-500"}`} />
+                  PRO MODE
+                </h2>
+                <p className="text-[9px] font-mono text-slate-400 mt-0.5 tracking-widest uppercase">
+                  {isProMode ? "Advanced Hacker Tools Enabled" : "Basic Fast ID Generator"}
+                </p>
+              </div>
+              
+              <button 
+                onClick={() => setIsProMode(!isProMode)}
+                className={`relative w-14 h-7 rounded-full transition-colors duration-300 ease-in-out cursor-pointer ${
+                  isProMode ? "bg-brand-accent shadow-[0_0_15px_rgba(254,225,1,0.4)]" : "bg-slate-700"
+                }`}
+              >
+                <div 
+                  className={`absolute top-1 left-1 bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ease-in-out ${
+                    isProMode ? "translate-x-7 bg-brand-primary" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+
             {badgeData.format === "squad" ? (
               <div className="space-y-6">
                 {badgeData.teammates && badgeData.teammates.map((teammate, index) => (
@@ -148,6 +177,7 @@ export default function App() {
               onChange={setBadgeData}
               onGenerateAiTitle={handleGenerateAiTitle}
               isGeneratingAi={isGeneratingAi}
+              isProMode={isProMode}
             />
           </div>
 
